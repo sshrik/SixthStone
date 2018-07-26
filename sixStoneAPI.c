@@ -56,6 +56,7 @@ void display(char plate[][PLATE_MAX], int lenX, int lenY)	{
 
 int whoWin(char plate[][PLATE_MAX], int lenX, int lenY, int X, int Y)	{
 	// TODO : Need to add 7-stones to loose.
+	// TODO : Need to check with isOutOfPlate() function to check outside. 
 	// East
 	int what = plate[X][Y];
 	int i;

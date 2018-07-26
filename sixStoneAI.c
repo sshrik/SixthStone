@@ -14,7 +14,10 @@ void getNext(char plate[][PLATE_MAX], int *candX, int * candY, int * nextX, int 
 
 
 
-int getCandidate(char plate[][PLATE_MAX], int * candX, int * candY, int turn);
+int getCandidate(char plate[][PLATE_MAX], int * candX, int * candY, int turn)	{
+	// Check all turn`s around EMPTY.
+
+}
 
 int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn)	{
 	// Find is plate have win state. If exist, return dir. Else, return "NO";
