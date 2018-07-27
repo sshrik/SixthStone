@@ -1,12 +1,21 @@
 #include "sixthStone.h"
 
+// TODO: X, Y to change cord2D.
+
 int getCandidate(char plate[][PLATE_MAX], int * candX, int * candY, int turn);
+//int getCandidate(char plate[][PLATE_MAX], cord2D *candCord, int turn);
 int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn);
+//int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
 int isWinState(char plate[][PLATE_MAX], int x, int y, int turn, int dir);
+//int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
 int isOutOfPlate(int x, int y, int next, int dir);
+//int isOutOfPlate(cord2D cord, int next, int dir);
 int getState(char plate[][PLATE_MAX], int x, int y, int turn, int dir);
+//int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
 void doWin(char plate[][PLATE_MAX], int * X, int * Y, int dir, int * nextX, int * nextY, int turn);
+//void doWin(char plate[][PLATE_MAX], cord2d * cord , int dir, cord2d * next, int turn);
 void getNext(char plate[][PLATE_MAX], int *candX, int * candY, int * nextX, int * nextY, int turn);
+//void getNext(char plate[][PLATE_MAX], cord2D *candCord, cord2D *next, int turn);
 
 
 
