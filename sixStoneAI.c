@@ -1,42 +1,25 @@
 #include "sixthStone.h"
 
-// TODO: X, Y to change cord2D.
-
-int getCandidate(char plate[][PLATE_MAX], int * candX, int * candY, int turn);
-//int getCandidate(char plate[][PLATE_MAX], cord2D *candCord, int turn);
-int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn);
-//int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
-int isWinState(char plate[][PLATE_MAX], int x, int y, int turn, int dir);
-//int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
-int isOutOfPlate(int x, int y, int next, int dir);
-//int isOutOfPlate(cord2D cord, int next, int dir);
-int getState(char plate[][PLATE_MAX], int x, int y, int turn, int dir);
-//int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
-void doWin(char plate[][PLATE_MAX], int * X, int * Y, int dir, int * nextX, int * nextY, int turn);
-//void doWin(char plate[][PLATE_MAX], cord2d * cord , int dir, cord2d * next, int turn);
-void getNext(char plate[][PLATE_MAX], int *candX, int * candY, int * nextX, int * nextY, int turn);
-//void getNext(char plate[][PLATE_MAX], cord2D *candCord, cord2D *next, int turn);
 
 
-
-
-
-
-
-int getCandidate(char plate[][PLATE_MAX], int * candX, int * candY, int turn)	{
-	// Check all turn`s around EMPTY.
+int getCandidate(char plate[][PLATE_MAX], cord2D *candCord, int turn)	{
+	// Check where can turn`th player put stone.
 
 }
 
-int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn)	{
+int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 	// Find is plate have win state. If exist, return dir. Else, return "NO";
 	int i, j, k, dir = NO;
+	cord2D temp;
+
 	for(i = 0; i < PLATE_MAX; i++)	{
 		for(j = 0; j < PLATE_MAX; j++)	{
 			for(k = 1; k < 8; k++)	{
-				if(isWinState(plate, i, j, turn, k))	{
-					*X = i;
-					*Y = j;
+				temp.x = i;
+				temp.y = j;
+				if(isWinState(plate, temp, turn, k))	{
+					cord->x = i;
+					cord->y = j;
 					return k;
 				}
 			}
@@ -45,16 +28,17 @@ int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn)	{
 	return dir;
 }
 
-int isWinState(char plate[][PLATE_MAX], int x, int y, int turn, int dir)	{
-	// Does [x][y] to 8 is win state?
+int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
+	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
 	int i;
-	if(isOutOfPlate(x, y, 8, dir)) {
-		// Does state is out of state, -1 is not count stating point.
+	
+	if(isOutOfPlate(cord, 8, dir)) {
 		return NO;
 	}
+
 	switch(dir)	{
 		case EAST:	// Y++
-			if(plate[x][y] == turn && plate[x][y + 7] != turn) {
+			if(plate[cord.x][cord.y] == turn && plate[cord.x][cord.y + 7] != turn) {
 				// if 4 or 5 turn`th stone exist, return true.
 			}
 			break;
@@ -79,51 +63,49 @@ int isWinState(char plate[][PLATE_MAX], int x, int y, int turn, int dir)	{
 	}
 }
 
-int isOutOfPlate(int x, int y, int next, int dir)	{
-	// Check x + next or y - next are out of state.
+int isOutOfPlate(cord2D cord, int next, int dir)	{
+	// Check x + next or y - next are out of plate.
 	switch(dir)	{
 		case EAST:	// Y++
-			return y + next - 1 < PLATE_MAX;
+			return cord.y + next - 1 >= PLATE_MAX;
 			break;
 		case WEST:	// Y--
-			return y - next + 1>= 0;
+			return cord.y - next + 1 < 0;
 			break;
 		case SOUTH:	// X++
-			return x + next - 1< PLATE_MAX;
+			return cord.x + next - 1 >= PLATE_MAX;
 			break;
 		case NORTH:	// X--
-			return x - next + 1 >= 0;
+			return cord.x - next + 1 < 0;
 			break;
 
 		case EAST_SOUTH:	// X++ Y++
-			return x + next  - 1 < PLATE_MAX && y + next - 1 < PLATE_MAX;
+			return cord.x + next  - 1 >= PLATE_MAX && cord.y + next - 1 >= PLATE_MAX;
 			break;
 		case EAST_NORTH:	// X-- Y++
-			return x - next + 1 >= 0 && y + next - 1 < PLATE_MAX;
+			return cord.x - next + 1 < 0 && cord.y + next - 1 >= PLATE_MAX;
 			break;
 		case WEST_SOUTH:	// X++ Y--
-			return x + next - 1 < PLATE_MAX && y - next + 1 >= 0;
+			return cord.x + next - 1 >= PLATE_MAX && cord.y - next + 1 < 0;
 			break;
 		case WEST_NORTH:	// X-- Y-- 
-			return x - next + 1 >= 0 && y - next + 1 >= 0;
+			return cord.x - next + 1 < 0 && cord.y - next + 1 < 0;
 			break;
-		
 		default:
 			break;
 	}
-	
 }
 
-int getState(char plate[][PLATE_MAX], int x, int y, int turn, int dir)	{
+int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 	int val = -1;
-	// Stone can be WHITE. BLACK, EMPTY, BLOCK <=> BLACK, WHITE
-	// if XOOO___X == 2 score.	cause 3 continuos and 1 blocked.
-	// if X__OO__X == 2 score.	cause 2 continuos and no blocked.
-	// if XOO_____ == 1 score.	cause 2 continuos and 1 blocked.
-	// if XOOX____ == 0 score.	cause 2 continuos but all blocked.
-	// if XOOXOXOX == 0 score.	cause this have no-meaning.
-	if(isOutOfPlate(x, y, 8, dir)) {
-		// Does state is out of state, -1 is not count stating point.
+	/* Stone can be WHITE. BLACK, EMPTY, BLOCK <=> BLACK, WHITE
+	* if XOOO___X == 2 score.	cause 3 continuos and 1 blocked.
+	* if X__OO__X == 2 score.	cause 2 continuos and no blocked.
+	* if XOO_____ == 1 score.	cause 2 continuos and 1 blocked.
+	* if XOOX____ == 0 score.	cause 2 continuos but all blocked.
+	* if XOOXOXOX == 0 score.	cause this have no-meaning. 
+	*/
+	if(isOutOfPlate(cord, 8, dir)) {
 		return NO;
 	}
 
@@ -151,8 +133,8 @@ int getState(char plate[][PLATE_MAX], int x, int y, int turn, int dir)	{
 	}
 }
 
-void doWin(char plate[][PLATE_MAX], int * X, int * Y, int dir, int * nextX, int * nextY, int turn)	{
-	// Start from x, y, direction dir is winning state, so do nextX and nextY to finish game.
+void doWin(char plate[][PLATE_MAX], cord2D * cord , int dir, cord2D * next, int turn)	{
+	// Start from plate[cord.x, cord.y], direction dir is winning state, so put nextX and nextY to finish game.
 	switch(dir)	{
 		case EAST:	// Y++
 			break;
@@ -177,5 +159,22 @@ void doWin(char plate[][PLATE_MAX], int * X, int * Y, int dir, int * nextX, int 
 	}
 }
 
-void getNext(char plate[][PLATE_MAX], int *candX, int * candY, int * nextX, int * nextY, int turn);
+void getNext(char plate[][PLATE_MAX], cord2D *candCord, cord2D *next, int turn)	{
+	// Put next 2 stone with given candidate Cordinate, candCord at "turn"`th turn.
 
+}
+
+void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn)	{
+	// Main AI. Return at next[2].
+	srand(time(NULL));
+	while(canPut(plate, lenCord, next[0], turn) == NO)	{
+		next[0].x = rand() % PLATE_MAX;
+		next[0].y = rand() % PLATE_MAX;
+	}
+	put(plate, next[0], turn);
+	while(canPut(plate, lenCord, next[1], turn) == NO)	{
+		next[1].x = rand() % PLATE_MAX;
+		next[1].y = rand() % PLATE_MAX;
+	}
+	put(plate, next[1], turn);
+}

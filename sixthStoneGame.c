@@ -1,31 +1,40 @@
 #include "sixthStone.h"
 
 int main()	{
-	int lenX, lenY, x, y;
 	char plate[PLATE_MAX][PLATE_MAX];
-	int turn = BLACK;
+	int turn = WHITE;
+	int i;
+	cord2D nextPut[2], before[2];
+	cord2D lenCord;
 
-	x = 0;	lenX = PLATE_MAX;
-	y = 0;	lenY = PLATE_MAX;
-
+	nextPut[0].x = -1;	lenCord.x = PLATE_MAX;
+	nextPut[0].y = -1;	lenCord.y = PLATE_MAX;
+	nextPut[1].x = -1;
+	nextPut[1].y = -1;
 	initPlate(plate);
 		
 	do {
-		display(plate, lenX, lenY);
-		scanf(" %d %d", &x, &y);
-		while(canPut(plate, lenX, lenY, x, y, turn) == NO)	{
-
-			printf("%c[1;%dm", 27, 31);
-			printf("You can`t put there.\n");
-			printf("%c[0m",27);
-			scanf(" %d %d", &x, &y);
-		}
-		put(plate, x, y, turn);
 		changeTurn(&turn);
-	}	while(whoWin(plate, lenX, lenY, x, y) == NO);
+		display(plate, lenCord);
+		if(turn == BLACK)	{
+			sixthStoneBot(plate, lenCord, nextPut, before, turn);
+		}
+		else {
+			for(i = 0; i < 2; i++)	{
+				scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
+				while(canPut(plate, lenCord, nextPut[i], turn) == NO)	{
+					printf("%c[1;%dm", 27, 31);
+					printf("You can`t put there.\n");
+					printf("%c[0m",27);
+					scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
+				}
+				put(plate, nextPut[i], turn);
+				display(plate, lenCord);
+			}
+		}
+	}	while(whoWin(plate, lenCord, nextPut, turn) == NO);
 	if(turn == WHITE) printf("White Win!\n");
 	else printf("Black Win!\n");
-	return 0;
 
 	return 0;
 }

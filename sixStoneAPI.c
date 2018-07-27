@@ -1,6 +1,7 @@
 #include "sixthStone.h"
+// TODO : change lenX, lenY to cord2D lenCord and x, y to cord2D cord.
 
-void display(char plate[][PLATE_MAX], int lenX, int lenY)	{
+void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 	// Clear monitor and Display plate with x - y number.
 	int i, j;
 	
@@ -13,18 +14,18 @@ void display(char plate[][PLATE_MAX], int lenX, int lenY)	{
 	printf("*\t");
 	printf("%c[0m",27);
 
-	for(j = 0; j < lenY; j++) {
+	for(j = 0; j < lenCord.y; j++) {
 		printf("%c[1;%dm", 27, 37);
 		printf("%d\t", j);
 		printf("%c[0m",27); 
 	}
 	printf("\n");
 
-	for(i = 0; i < lenX; i++)	{
+	for(i = 0; i < lenCord.x; i++)	{
 		printf("%c[1;%dm",27, 37);
 		printf("%d\t", i);
 		printf("%c[0m",27); 
-		for(j = 0; j < lenY; j++)	{
+		for(j = 0; j < lenCord.y; j++)	{
 			switch(plate[i][j])	{
 				case BLACK:
 					printf("%c[1;%dm", 27, 34);
@@ -54,81 +55,88 @@ void display(char plate[][PLATE_MAX], int lenX, int lenY)	{
 	}
 }
 
-int whoWin(char plate[][PLATE_MAX], int lenX, int lenY, int X, int Y)	{
+int whoWin(char plate[][PLATE_MAX], cord2D lenCord, cord2D* cord, int turn)	{
 	// TODO : Need to add 7-stones to loose.
-	// TODO : Need to check with isOutOfPlate() function to check outside. 
-	// East
-	int what = plate[X][Y];
-	int i;
+	char what = turn;
+	int c, i;
 
-	for(i = 0; i < 6; i++)	{
-		if(Y + i >= lenY) break;
-		else if(plate[X][Y + i] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
+	for(c = 0; c < 2; c++)	{
+		// East
+		if(!isOutOfPlate(cord[c], 6, EAST)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x][cord[c].y + i] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
 
-	// West
-	for(i = 0; i < 6; i++)	{
-		if(Y - i < 0) break;
-		else if(plate[X][Y - i] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
+		// West
+		if(!isOutOfPlate(cord[c], 6, WEST)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x][cord[c].y - i] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
+		
+		// South
+		if(!isOutOfPlate(cord[c], 6, SOUTH)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x + i][cord[c].y] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
 
-	// South
-	for(i = 0; i < 6; i++)	{
-		if(X + i >= lenX) break;
-		else if(plate[X + i][Y] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
-	
-	// North
-	for(i = 0; i < 6; i++)	{
-		if(X - i < 0) break;
-		else if(plate[X - i][Y] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
-	
-	// East-South
-	for(i = 0; i < 6; i++)	{
-		if(Y + i >= lenY || X + i >= lenX) break;
-		else if(plate[X + i][Y + i] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
-	
-	// East-North
-	for(i = 0; i < 6; i++)	{
-		if(Y + i >= lenY || X - i < 0) break;
-		else if(plate[X - i][Y + i] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
-	
-	// West-South
-	for(i = 0; i < 6; i++)	{
-		if(Y - i < 0 || X + i >= lenX) break;
-		else if(plate[X + i][Y - i] != what)	break;
-	}
-	if(i == 6) return plate[X][Y];
+		// North
+		if(!isOutOfPlate(cord[c], 6, NORTH)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x - i][cord[c].y] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
 
-	// West-Nort
-	for(i = 0; i < 6; i++)	{
-		if(Y - i < 0 || X - i < 0) break;
-		else if(plate[X - i][Y - i] != what)	break;
+		// East-South
+		if(!isOutOfPlate(cord[c], 6, EAST_SOUTH)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x + i][cord[c].y + i] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
+
+		// East-North
+		if(!isOutOfPlate(cord[c], 6, EAST_NORTH)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x - i][cord[c].y + i] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
+
+		// West-South
+		if(!isOutOfPlate(cord[c], 6, WEST_SOUTH)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x + i][cord[c].y - i] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
+		// West-Nort
+		if(!isOutOfPlate(cord[c], 6, WEST_NORTH)){
+			for(i = 0; i < 6; i++)	{
+				if(plate[cord[c].x - i][cord[c].y - i] != what)	break;
+			}
+			if(i == 6) return plate[cord[c].x][cord[c].y];
+		}
 	}
-	if(i == 6) return plate[X][Y];
-	
 	return NO;
 }
 
-void put(char plate[][PLATE_MAX], int X, int Y, int what)	{
-	plate[X][Y] = what;
+void put(char plate[][PLATE_MAX], cord2D cord, int what)	{
+	plate[cord.x][cord.y] = what;
 }
 
-int canPut(char plate[][PLATE_MAX], int lenX, int lenY, int X, int Y, int what)	{
-	if(X >= lenX || Y >= lenY)	{
+int canPut(char plate[][PLATE_MAX], cord2D lenCord, cord2D cord, int what)	{
+	if(cord.x >= lenCord.x || cord.y >= lenCord.y)	{
 		// If x or y coordinate is over len max,
 		return NO;
 	}	
-	else if(plate[X][Y] != EMPTY)	{
+	else if(plate[cord.x][cord.y] != EMPTY)	{
 		// If plate[x][y] is filled with other stone,
 		return NO;
 	}
