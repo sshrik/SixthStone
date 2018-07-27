@@ -132,10 +132,7 @@ void put(char plate[][PLATE_MAX], cord2D cord, int what)	{
 }
 
 int canPut(char plate[][PLATE_MAX], cord2D lenCord, cord2D cord, int what)	{
-	if(cord.x >= lenCord.x || cord.y >= lenCord.y)	{
-		// If x or y coordinate is over len max,
-		return NO;
-	}	
+	if(isOutOfPlate(cord, 0, 1))	return NO;
 	else if(plate[cord.x][cord.y] != EMPTY)	{
 		// If plate[x][y] is filled with other stone,
 		return NO;

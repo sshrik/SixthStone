@@ -16,7 +16,7 @@ int main()	{
 	do {
 		changeTurn(&turn);
 		display(plate, lenCord);
-		if(turn == BLACK)	{
+		if(turn == WHITE)	{
 			sixthStoneBot(plate, lenCord, nextPut, before, turn);
 		}
 		else {

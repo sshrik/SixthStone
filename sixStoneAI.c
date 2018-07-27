@@ -1,10 +1,92 @@
 #include "sixthStone.h"
 
-
-
-int getCandidate(char plate[][PLATE_MAX], cord2D *candCord, int turn)	{
+int getCandidate(char plate[][PLATE_MAX], cord2D lenCord, cord2D *candCord, int turn)	{
 	// Check where can turn`th player put stone.
+	int candidateWeight[PLATE_MAX][PLATE_MAX] = {{0,}};
+	int i, j, candidateNum = 0;
+	int maxWeight = -1;
+	cord2D temp;
 
+	for(i = 0; i < lenCord.x; i++)	{
+		for(j = 0; j < lenCord.y; j++)	{
+			temp.x = i;
+			temp.y = j;
+			if(canPut(plate, lenCord, temp, turn) == YES)	{
+				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
+				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
+			}
+		}
+	}
+
+	for(i = 0; i < lenCord.x; i++)	{
+		for(j = 0; j < lenCord.y; j++)	{
+			if(candidateWeight[i][j] == maxWeight) {
+				candCord[candidateNum].x = i;
+				candCord[candidateNum].y = j;
+				candidateNum++;
+			}
+		}
+	}
+
+	return candidateNum;
+}
+
+int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
+	int weight = 0;
+	int w, b, i;
+	w = 0; b = 0;
+
+	if(!isOutOfPlate(temp, 2, EAST))	{
+		if(plate[temp.x][temp.y + 1] == WHITE) w++;
+		else if(plate[temp.x][temp.y + 1] == BLACK) b++;
+	}
+	if(!isOutOfPlate(temp, 2, WEST))	{
+		if(plate[temp.x][temp.y - 1] == WHITE) w++;
+		else if(plate[temp.x][temp.y - 1] == BLACK) b++;
+	}
+	if(!isOutOfPlate(temp, 2, SOUTH))	{
+		if(plate[temp.x + 1][temp.y] == WHITE) w++;
+		else if(plate[temp.x + 1][temp.y] == BLACK) b++;
+	}
+	if(!isOutOfPlate(temp, 2, NORTH))	{
+		if(plate[temp.x - 1][temp.y] == WHITE) w++;
+		else if(plate[temp.x - 1][temp.y] == BLACK) b++;
+	}
+
+	if(!isOutOfPlate(temp, 2, EAST_SOUTH))	{
+		if(plate[temp.x + 1][temp.y] + 1 == WHITE) w++;
+		else if(plate[temp.x + 1][temp.y + 1] == BLACK) b++;
+	}
+	if(!isOutOfPlate(temp, 2, EAST_NORTH))	{
+		if(plate[temp.x - 1][temp.y + 1] == WHITE) w++;
+		else if(plate[temp.x - 1][temp.y + 1] == BLACK) b++;
+	}
+	if(!isOutOfPlate(temp, 2, WEST_SOUTH))	{
+		if(plate[temp.x + 1][temp.y - 1] == WHITE) w++;
+		else if(plate[temp.x + 1][temp.y - 1] == BLACK) b++;
+	}
+	if(!isOutOfPlate(temp, 2, WEST_NORTH))	{
+		if(plate[temp.x - 1][temp.y - 1] == WHITE) w++;
+		else if(plate[temp.x - 1][temp.y - 1] == BLACK) b++;
+	}
+
+	if(turn == WHITE)	{
+		for(i = 1; i <= w; i++)	{
+			weight += i;
+		}
+		for(i = 1; i <= b; i++)	{
+			weight -= i;
+		}
+	}
+	else if(turn == BLACK)	{
+		for(i = 1; i <= w; i++)	{
+			weight -= i;
+		}
+		for(i = 1; i <= b; i++)	{
+			weight += i;
+		}
+	}
+	return weight;
 }
 
 int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
@@ -17,7 +99,7 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 			for(k = 1; k < 8; k++)	{
 				temp.x = i;
 				temp.y = j;
-				if(isWinState(plate, temp, turn, k))	{
+				if(isWinState(plate, temp, turn, k) == YES)	{
 					cord->x = i;
 					cord->y = j;
 					return k;
@@ -25,12 +107,13 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 			}
 		}
 	}
+
 	return dir;
 }
 
 int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
-	int i;
+	int i, count = 0;
 	
 	if(isOutOfPlate(cord, 8, dir)) {
 		return NO;
@@ -38,29 +121,91 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 
 	switch(dir)	{
 		case EAST:	// Y++
-			if(plate[cord.x][cord.y] == turn && plate[cord.x][cord.y + 7] != turn) {
+			if(plate[cord.x][cord.y] != turn && plate[cord.x][cord.y + 7] != turn && plate[cord.x][cord.y + 1] == turn) {
 				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x][cord.y + i] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
 			}
 			break;
 		case WEST:	// Y--
+			if(plate[cord.x][cord.y] != turn && plate[cord.x][cord.y - 7] != turn && plate[cord.x][cord.y - 1] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x][cord.y - i] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 		case SOUTH:	// X++
+			if(plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y] != turn && plate[cord.x + 1][cord.y] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x + i][cord.y] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 		case NORTH:	// X--
+			if(plate[cord.x - 7][cord.y] != turn && plate[cord.x][cord.y] != turn && plate[cord.x - 1][cord.y] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x - i][cord.y] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 
 		case EAST_SOUTH:	// X++ Y++
+			if(plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y + 7] != turn && plate[cord.x + 1][cord.y + 1] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x + i][cord.y + i] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 		case EAST_NORTH:	// X-- Y++
+			if(plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y + 7] != turn && plate[cord.x - 1][cord.y + 1] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x - i][cord.y + i] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 		case WEST_SOUTH:	// X++ Y--
+			if(plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y - 7] != turn && plate[cord.x + 1][cord.y - 1] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x + i][cord.y - i] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 		case WEST_NORTH:	// X-- Y--
+			if(plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y - 7] != turn && plate[cord.x - 1][cord.y - 1] == turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for(i = 1; i <= 6; i++)	{
+					if(plate[cord.x - i][cord.y - i] == turn) count++;
+				}
+				if(count >= 4) return YES;
+				else return NO;
+			}
 			break;
 		
 		default:
 			break;
 	}
+	return NO;
 }
 
 int isOutOfPlate(cord2D cord, int next, int dir)	{
@@ -166,15 +311,209 @@ void getNext(char plate[][PLATE_MAX], cord2D *candCord, cord2D *next, int turn)	
 
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn)	{
 	// Main AI. Return at next[2].
+	// Make candidate proper number ( 50 );
+	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX];
+	cord2D myCandCord[PLATE_MAX * PLATE_MAX];
+	cord2D temp;
+	char tempPlate[PLATE_MAX][PLATE_MAX];
+	int oppoCandNum = 0;
+	int myCandNum = 0;
+	int highestWeight = 0;
+	int i, oppo, oppoWeight, myWeight, index[2];
+	int loseDir, count = 0;
+
+	// turn mean my color, oppo mean other`s color.
+	if(turn == BLACK) oppo = WHITE;
+	else oppo = BLACK;
+
 	srand(time(NULL));
-	while(canPut(plate, lenCord, next[0], turn) == NO)	{
-		next[0].x = rand() % PLATE_MAX;
-		next[0].y = rand() % PLATE_MAX;
+
+	next[0].x = -1;
+	next[0].y = -1;
+	next[1].x = -1;
+	next[1].y = -1;
+
+	// Check oppo`s win state. ( 4 ~ 5 continuos state. )
+	loseDir = getWinState(plate, &temp, oppo);
+	if(loseDir != NO)	{
+		printf("LOSE STATE FIND.\n");
+		// from start temp cordinate to direction loseDir, lose State occured.
+		switch(loseDir)	{
+			case EAST:	// Y++
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x][temp.y + i] == EMPTY) {
+						next[count].x = temp.x;
+						next[count].y = temp.y + i;
+						count++;
+					}
+					else if(plate[temp.x][temp.y + i] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			case WEST:	// Y--
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x][temp.y - i] == EMPTY) {
+						next[count].x = temp.x;
+						next[count].y = temp.y - i;
+						count++;
+					}
+					else if(plate[temp.x][temp.y - i] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			case SOUTH:	// X++
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x + i][temp.y] == EMPTY) {
+						next[count].x = temp.x + i;
+						next[count].y = temp.y;
+						count++;
+					}
+					else if(plate[temp.x + i][temp.y] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			case NORTH:	// X--
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x - i][temp.y] == EMPTY) {
+						next[count].x = temp.x - i;
+						next[count].y = temp.y;
+						count++;
+					}
+					else if(plate[temp.x - i][temp.y] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+
+			case EAST_SOUTH:	// X++ Y++
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x + i][temp.y + i] == EMPTY) {
+						next[count].x = temp.x + i;
+						next[count].y = temp.y + i;
+						count++;
+					}
+					else if(plate[temp.x + i][temp.y] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			case EAST_NORTH:	// X-- Y++
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x - i][temp.y + i] == EMPTY) {
+						next[count].x = temp.x - i;
+						next[count].y = temp.y + i;
+						count++;
+					}
+					else if(plate[temp.x - i][temp.y + i] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			case WEST_SOUTH:	// X++ Y--
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x + i][temp.y - i] == EMPTY) {
+						next[count].x = temp.x + i;
+						next[count].y = temp.y - i;
+						count++;
+					}
+					else if(plate[temp.x + i][temp.y - i] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			case WEST_NORTH:	// X-- Y--
+				for(i = 0; i < 8; i++)	{
+					if(plate[temp.x - i][temp.y - i] == EMPTY) {
+						next[count].x = temp.x - i;
+						next[count].y = temp.y + i;
+						count++;
+					}
+					else if(plate[temp.x - i][temp.y - i] == turn)	{
+						count++;
+					}
+					if(count == 2) break;
+				}
+				break;
+			
+			default:
+				break;
+		}
+		if(next[0].x != -1)	put(plate, next[0], turn);
+		if(next[1].x != -1)	put(plate, next[1], turn);
 	}
-	put(plate, next[0], turn);
-	while(canPut(plate, lenCord, next[1], turn) == NO)	{
-		next[1].x = rand() % PLATE_MAX;
-		next[1].y = rand() % PLATE_MAX;
+	if(next[0].x == -1 && next[1].x != -1) {	
+		// Calculate opposite turn`s highest plate.
+		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
+		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
+	
+		for(i = 0; i < oppoCandNum; i++)	{
+			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
+			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
+			if(myWeight > highestWeight) index[0] = i;
+		}
+		next[0].x = oppoCandCord[index[0]].x;
+		next[0].y = oppoCandCord[index[0]].y;
+		put(plate, next[0], turn);
 	}
-	put(plate, next[1], turn);
+	else if(next[1].x == -1 && next[0].x != -1) {
+		// Calculate opposite turn`s highest plate.
+		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
+		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
+	
+		for(i = 0; i < oppoCandNum; i++)	{
+			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
+			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
+			if(myWeight > highestWeight) index[1] = i;
+		}	
+		next[1].x = oppoCandCord[index[1]].x;
+		next[1].y = oppoCandCord[index[1]].y;
+		put(plate, next[1], turn);
+	}
+	else {	
+		// Calculate opposite turn`s highest plate.
+		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
+		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
+	
+		for(i = 0; i < oppoCandNum; i++)	{
+			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
+			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
+			if(myWeight > highestWeight) index[0] = i;
+		}
+		next[0].x = oppoCandCord[index[0]].x;
+		next[0].y = oppoCandCord[index[0]].y;
+	
+		put(plate, next[0], turn);
+		highestWeight = 0;
+	
+		// Calculate opposite turn`s highest plate.
+		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
+		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
+	
+		for(i = 0; i < oppoCandNum; i++)	{
+			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
+			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
+			if(myWeight > highestWeight) index[1] = i;
+		}	
+		next[1].x = oppoCandCord[index[1]].x;
+		next[1].y = oppoCandCord[index[1]].y;
+		put(plate, next[1], turn);
+	}
 }

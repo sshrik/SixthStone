@@ -43,7 +43,8 @@ int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, in
 //int getStrDir(char* str, char plate[][PLATE_MAX], cord2D cord, int stateLen, int dir);
 void initPlate(char plate[][PLATE_MAX]);
 
-int getCandidate(char plate[][PLATE_MAX], cord2D *candCord, int turn);
+int getCandidate(char plate[][PLATE_MAX], cord2D lenCord, cord2D *candCord, int turn);
+int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn);
 int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
 int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
 int isOutOfPlate(cord2D cord, int next, int dir);
