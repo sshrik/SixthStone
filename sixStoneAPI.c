@@ -1,4 +1,4 @@
-#include "sixStone.h"
+#include "sixthStone.h"
 
 void display(char plate[][PLATE_MAX], int lenX, int lenY)	{
 	// Clear monitor and Display plate with x - y number.
@@ -240,4 +240,13 @@ int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, in
 			break;
 	}
 	return -1;
+}
+
+void initPlate(char plate[][PLATE_MAX])	{
+	int i, j;
+	for(i = 0; i < PLATE_MAX; i++)	{
+		for(j = 0; j < PLATE_MAX; j++)	{
+			plate[i][j] = EMPTY;
+		}
+	}
 }

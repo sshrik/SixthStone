@@ -1,9 +1,9 @@
-#include "sixStone.h"
+#include "sixthStone.h"
 
 int getCandidate(char plate[][PLATE_MAX], int * candX, int * candY, int turn);
 int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn);
 int isWinState(char plate[][PLATE_MAX], int x, int y, int turn, int dir);
-int isOutOfPlate(int x, int y, int dir);
+int isOutOfPlate(int x, int y, int next, int dir);
 int getState(char plate[][PLATE_MAX], int x, int y, int turn, int dir);
 void doWin(char plate[][PLATE_MAX], int * X, int * Y, int dir, int * nextX, int * nextY, int turn);
 void getNext(char plate[][PLATE_MAX], int *candX, int * candY, int * nextX, int * nextY, int turn);
@@ -26,8 +26,8 @@ int getWinState(char plate[][PLATE_MAX], int * X, int * Y, int turn)	{
 		for(j = 0; j < PLATE_MAX; j++)	{
 			for(k = 1; k < 8; k++)	{
 				if(isWinState(plate, i, j, turn, k))	{
-					*candX = i;
-					*candY = j;
+					*X = i;
+					*Y = j;
 					return k;
 				}
 			}
