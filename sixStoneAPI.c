@@ -5,7 +5,7 @@ void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 	// Clear monitor and Display plate with x - y number.
 	int i, j;
 	
-	system("clear");
+	system("cls");
 
 	// Printf with color.
 	// 30 default	31 Bright Red	32 Green	33 Yellow	34 Blue	35 Violet	36 Bright Blue	37 Bright White

@@ -36,6 +36,7 @@ int main()	{
 	display(plate, lenCord);
 	if(turn == WHITE) printf("White Win!\n");
 	else printf("Black Win!\n");
+	system("pause");
 
 	return 0;
 }

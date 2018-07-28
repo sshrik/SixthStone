@@ -613,7 +613,8 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 		// Calculate opposite turn`s highest plate.
 		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
 		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
-	
+
+		highestWeight = 0;
 		for(i = 0; i < oppoCandNum; i++)	{
 			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;

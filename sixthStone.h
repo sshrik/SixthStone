@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
+#pragma warning(disable:4996)
 
 /* << CORDINATE Standard >>
  * X = i , y = j, so standard is plate[x][y].
