@@ -255,3 +255,36 @@ void initPlate(char plate[][PLATE_MAX])	{
 		}
 	}
 }
+
+int isOutOfPlate(cord2D cord, int next, int dir) {
+	// Check x + next or y - next are out of plate.
+	switch (dir) {
+	case EAST:	// Y++
+		return cord.y + next - 1 >= PLATE_MAX;
+		break;
+	case WEST:	// Y--
+		return cord.y - next + 1 < 0;
+		break;
+	case SOUTH:	// X++
+		return cord.x + next - 1 >= PLATE_MAX;
+		break;
+	case NORTH:	// X--
+		return cord.x - next + 1 < 0;
+		break;
+
+	case EAST_SOUTH:	// X++ Y++
+		return cord.x + next - 1 >= PLATE_MAX && cord.y + next - 1 >= PLATE_MAX;
+		break;
+	case EAST_NORTH:	// X-- Y++
+		return cord.x - next + 1 < 0 && cord.y + next - 1 >= PLATE_MAX;
+		break;
+	case WEST_SOUTH:	// X++ Y--
+		return cord.x + next - 1 >= PLATE_MAX && cord.y - next + 1 < 0;
+		break;
+	case WEST_NORTH:	// X-- Y-- 
+		return cord.x - next + 1 < 0 && cord.y - next + 1 < 0;
+		break;
+	default:
+		break;
+	}
+}
