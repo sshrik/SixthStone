@@ -103,49 +103,49 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 					// In case of outside starting case, move opposite direction.
 					switch (k) {
 						case EAST:
+							cord->x = i;
+							if (j == 0) cord->y = j - 1;
+							else cord->y = j;
+							break;
+						case WEST:
+							cord->x = i;
+							if (j == PLATE_MAX - 1)	cord->y = j + 1;
+							else cord->y = j;
+							break;
+						case SOUTH:
 							if (i == 0)	cord->x = i - 1;
 							else cord->x = i;
 							cord->y = j;
 							break;
-						case WEST:
+						case NORTH:
 							if (i == PLATE_MAX - 1)	cord->x = i + 1;
 							else cord->x = i;
 							cord->y = j;
-							break;
-						case SOUTH:
-							cord->x = i;
-							if (j == 0) cord->y = i - 1;
-							else cord->y = i;
-							break;
-						case NORTH:
-							cord->x = i;
-							if (i == PLATE_MAX - 1)	cord->y = i + 1;
-							else cord->y = i;
 							break;
 
 						case EAST_SOUTH:
 							if (i == 0)	cord->x = i - 1;
 							else cord->x = i;
-							if (j == 0) cord->y = i - 1;
-							else cord->y = i;
+							if (j == 0) cord->y = j - 1;
+							else cord->y = j;
 							break;
 						case EAST_NORTH:
 							if (i == 0)	cord->x = i - 1;
 							else cord->x = i;
-							if (i == PLATE_MAX - 1)	cord->y = i + 1;
-							else cord->y = i;
+							if (j == PLATE_MAX - 1)	cord->y = j + 1;
+							else cord->y = j;
 							break;
 						case WEST_SOUTH:
 							if (i == PLATE_MAX - 1)	cord->x = i + 1;
 							else cord->x = i;
-							if (j == 0) cord->y = i - 1;
-							else cord->y = i;
+							if (j == 0) cord->y = j - 1;
+							else cord->y = j;
 							break;
 						case WEST_NORTH:
 							if (i == PLATE_MAX - 1)	cord->x = i + 1;
 							else cord->x = i;
-							if (i == PLATE_MAX - 1)	cord->y = i + 1;
-							else cord->y = i;
+							if (j == PLATE_MAX - 1)	cord->y = j + 1;
+							else cord->y = j;
 							break;
 					}
 					return k;
@@ -161,7 +161,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
 	int i, count = 0;
 	
-	if (cord.x == 0 || cord.y == 0 || cord.x == PLATE_MAX - 1 || cord.y == PLATE_MAX - 1) {
+	if ((cord.x == 0 || cord.y == 0 || cord.x == PLATE_MAX - 1 || cord.y == PLATE_MAX - 1) && plate[cord.x][cord.y] == turn) {
 		// For start with cordinate (0, _), (_, 0), (18, _) or (_, 18) State check.
 		if (isOutOfPlate(cord, 7, dir)) return NO;
 		switch (dir) {
@@ -254,13 +254,15 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				return count >= 4 ? YES : NO;
 				break;
+			default:
+				break;
 		}
 	}
 	else {
 		if (isOutOfPlate(cord, 8, dir))	return NO;
 		switch (dir) {
 			case EAST:	// Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y + 1] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y + 7] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x][cord.y + i] == turn) count++;
@@ -273,7 +275,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				break;
 			case WEST:	// Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y - 1] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y - 7] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x][cord.y - i] == turn) count++;
@@ -286,7 +288,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				break;
 			case SOUTH:	// X++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 1][cord.y] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x + i][cord.y] == turn) count++;
@@ -299,7 +301,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				break;
 			case NORTH:	// X--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 1][cord.y] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x - i][cord.y] == turn) count++;
@@ -313,7 +315,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				break;
 
 			case EAST_SOUTH:	// X++ Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 1][cord.y + 1] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y + 7] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x + i][cord.y + i] == turn) count++;
@@ -326,7 +328,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				break;
 			case EAST_NORTH:	// X-- Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 1][cord.y + 1] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y + 7] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x - i][cord.y + i] == turn) count++;
@@ -339,7 +341,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				break;
 			case WEST_SOUTH:	// X++ Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 1][cord.y - 1] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y - 7] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x + i][cord.y - i] == turn) count++;
@@ -352,7 +354,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 				}
 				break;
 			case WEST_NORTH:	// X-- Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 1][cord.y - 1] == turn) {
+				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y - 7] != turn) {
 					// if 4 or 5 turn`th stone exist, return true.
 					for (i = 1; i <= 6; i++) {
 						if (plate[cord.x - i][cord.y - i] == turn) count++;
@@ -504,16 +506,132 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn) {
 	// Start from plate[cord.x, cord.y], direction dir is winning state, so put nextX and nextY to finish game.
 	int i, count = 0;
+	// For processing ___OOOO_.
+	int nonTurnIndex = 0;
+	int oppo;
+
+	oppo = turn == BLACK ? WHITE : BLACK;
 	
-	if(plate[temp.x][temp.y] == EMPTY) {
-		next[count].x = temp.x;
-		next[count].y = temp.y;
-		count++;
+	for (i = 0; i < 8; i++) {
+		switch (dir) {
+			case EAST:
+				if (plate[temp.x][temp.y + i] != oppo && plate[temp.x][temp.y + i + 1] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			case WEST:
+				if (plate[temp.x][temp.y - i] != oppo && plate[temp.x][temp.y - i - 1] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			case SOUTH:
+				if (plate[temp.x + i][temp.y] != oppo && plate[temp.x + i + 1][temp.y] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			case NORTH:
+				if (plate[temp.x - i][temp.y] != oppo && plate[temp.x - i - 1][temp.y] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+
+			case EAST_SOUTH:
+				if (plate[temp.x + i][temp.y + i] != oppo && plate[temp.x + i + 1][temp.y + i + 1] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			case EAST_NORTH:
+				if (plate[temp.x - i][temp.y + i] != oppo && plate[temp.x - i - 1][temp.y + i + 1] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			case WEST_SOUTH:
+				if (plate[temp.x + i][temp.y - i] != oppo && plate[temp.x + i + 1][temp.y - i - 1] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			case WEST_NORTH:
+				if (plate[temp.x - i][temp.y - i] != oppo && plate[temp.x - i - 1][temp.y - i - 1] == oppo) {
+					nonTurnIndex = i;
+					break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	switch (dir) {
+	case EAST:
+		if (plate[temp.x][temp.y + nonTurnIndex] == EMPTY) {
+			next[count].x = temp.x;
+			next[count].y = temp.y + nonTurnIndex;
+			count++;
+		}
+		break;
+	case WEST:
+		if (plate[temp.x][temp.y - nonTurnIndex] == EMPTY) {
+			next[count].x = temp.x;
+			next[count].y = temp.y - nonTurnIndex;
+			count++;
+		}
+		break;
+	case SOUTH:
+		if (plate[temp.x + nonTurnIndex][temp.y] == EMPTY) {
+			next[count].x = temp.x + nonTurnIndex;
+			next[count].y = temp.y;
+			count++;
+		}
+		break;
+	case NORTH:
+		if (plate[temp.x - nonTurnIndex][temp.y] == EMPTY) {
+			next[count].x = temp.x - nonTurnIndex;
+			next[count].y = temp.y;
+			count++;
+		}
+		break;
+
+	case EAST_SOUTH:
+		if (plate[temp.x + nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
+			next[count].x = temp.x + nonTurnIndex;
+			next[count].y = temp.y + nonTurnIndex;
+			count++;
+		}
+		break;
+	case EAST_NORTH:
+		if (plate[temp.x - nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
+			next[count].x = temp.x - nonTurnIndex;
+			next[count].y = temp.y + nonTurnIndex;
+			count++;
+		}
+		break;
+	case WEST_SOUTH:
+		if (plate[temp.x + nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
+			next[count].x = temp.x - nonTurnIndex;
+			next[count].y = temp.y - nonTurnIndex;
+			count++;
+		}
+		break;
+	case WEST_NORTH:
+		if (plate[temp.x - nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
+			next[count].x = temp.x - nonTurnIndex;
+			next[count].y = temp.y - nonTurnIndex;
+			count++;
+		}
+		break;
+	default:
+		break;
 	}
 
 	switch (dir) {
 		case EAST:	// Y++
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x][temp.y + i] == EMPTY) {
 					next[count].x = temp.x;
 					next[count].y = temp.y + i;
@@ -522,7 +640,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			}
 			break;
 		case WEST:	// Y--
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x][temp.y - i] == EMPTY) {
 					next[count].x = temp.x;
 					next[count].y = temp.y - i;
@@ -531,7 +649,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			}
 			break;
 		case SOUTH:	// X++
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y] == EMPTY) {
 					next[count].x = temp.x + i;
 					next[count].y = temp.y;
@@ -540,7 +658,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			}
 			break;
 		case NORTH: // X--
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y] == EMPTY) {
 					next[count].x = temp.x - i;
 					next[count].y = temp.y;
@@ -550,7 +668,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			break;
 
 		case EAST_SOUTH:	// X++ y++
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y + i] == EMPTY) {
 					next[count].x = temp.x + i;
 					next[count].y = temp.y + i;
@@ -559,7 +677,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			}
 			break;
 		case EAST_NORTH:	// X-- y++
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y + i] == EMPTY) {
 					next[count].x = temp.x - i;
 					next[count].y = temp.y + i;
@@ -568,7 +686,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			}
 			break;
 		case WEST_SOUTH:	// X++ y--
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y - i] == EMPTY) {
 					next[count].x = temp.x + i;
 					next[count].y = temp.y - i;
@@ -577,7 +695,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			}
 			break;
 		case WEST_NORTH:	// x-- y--
-			for (i = 1; i < 8; i++) {
+			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y - i] == EMPTY) {
 					next[count].x = temp.x - i;
 					next[count].y = temp.y - i;
@@ -613,11 +731,15 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 
 	//Search in case we can win.
 	if((loseDir = getWinState(plate, &temp, turn)) != NO) {
+		printf("Winning State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+		//system("pause");
 		doWin(plate, temp, loseDir, next, turn);
 	}
 
 	// Check oppo`s win state. ( 4 ~ 5 continuos state. )
 	else if((loseDir = getWinState(plate, &temp, oppo)) != NO)	{
+		printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+		//system("pause");
 		doSheild(plate, temp, loseDir, next, turn);
 	}
 
