@@ -3,8 +3,15 @@
 
 void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 	// Clear monitor and Display plate with x - y number.
-	int i, j;
-	
+	// int i, j;
+
+	int candidateWeight[PLATE_MAX][PLATE_MAX] = { { 0, } };
+	int i, j, candidateNum = 0;
+	int maxWeight = -1;
+	int turn;
+	cord2D temp;
+	cord2D candCord[PLATE_MAX * PLATE_MAX];
+
 	system("cls");
 
 	// Printf with color.
@@ -21,107 +28,207 @@ void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 	}
 	printf("\n");
 
-	for(i = 0; i < lenCord.x; i++)	{
-		printf("%c[1;%dm",27, 37);
+	for (i = 0; i < lenCord.x; i++) {
+		printf("%c[1;%dm", 27, 37);
 		printf("%d\t", i);
-		printf("%c[0m",27); 
-		for(j = 0; j < lenCord.y; j++)	{
-			switch(plate[i][j])	{
-				case BLACK:
-					printf("%c[1;%dm", 27, 34);
-					printf("B\t");
-					printf("%c[0m",27); 
-					break;
-				case WHITE:
-					printf("%c[1;%dm", 27, 37);
-					printf("W\t");
-					printf("%c[0m",27);
-					break;
-				case EMPTY:
-					printf("%c[1;%dm", 27, 30);
-					printf("E\t");
-					printf("%c[0m",27);
-					break;
-				case BLOCK:
-					printf("%c[1;%dm", 27, 36);
-					printf("C\t");
-					printf("%c[0m",27);
-					break;
-				default:
-					break;
+		printf("%c[0m", 27);
+		for (j = 0; j < lenCord.y; j++) {
+			switch (plate[i][j]) {
+			case BLACK:
+				printf("%c[1;%dm", 27, 34);
+				printf("B\t");
+				printf("%c[0m", 27);
+				break;
+			case WHITE:
+				printf("%c[1;%dm", 27, 37);
+				printf("W\t");
+				printf("%c[0m", 27);
+				break;
+			case EMPTY:
+				printf("%c[1;%dm", 27, 30);
+				printf("E\t");
+				printf("%c[0m", 27);
+				break;
+			case BLOCK:
+				printf("%c[1;%dm", 27, 36);
+				printf("C\t");
+				printf("%c[0m", 27);
+				break;
+			default:
+				break;
 			}
 		}
 		printf("\n");
 	}
+
+	turn = WHITE;
+
+	for (i = 0; i < lenCord.x; i++) {
+		for (j = 0; j < lenCord.y; j++) {
+			temp.x = i;
+			temp.y = j;
+			if (canPut(plate, lenCord, temp, turn) == YES) {
+				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
+				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
+			}
+		}
+	}
+
+	for (i = 0; i < lenCord.x; i++) {
+		for (j = 0; j < lenCord.y; j++) {
+			if (candidateWeight[i][j] == maxWeight) {
+				candCord[candidateNum].x = i;
+				candCord[candidateNum].y = j;
+				candidateNum++;
+			}
+		}
+	}
+	/* // For Test weight.
+	printf("\n");
+	printf("\n");
+
+	printf("%c[1;%dm", 27, 37);
+	printf("*\t");
+	printf("%c[0m", 27);
+
+	for (j = 0; j < lenCord.y; j++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", j);
+		printf("%c[0m", 27);
+	}
+	printf("\n");
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", i);
+		printf("%c[0m", 27);
+		for (j = 0; j < PLATE_MAX; j++) {
+			printf("%d\t", candidateWeight[i][j]);
+		}
+		printf("\n");
+	}
+
+
+	turn = BLACK;
+
+	for (i = 0; i < lenCord.x; i++) {
+		for (j = 0; j < lenCord.y; j++) {
+			temp.x = i;
+			temp.y = j;
+			if (canPut(plate, lenCord, temp, turn) == YES) {
+				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
+				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
+			}
+		}
+	}
+
+	for (i = 0; i < lenCord.x; i++) {
+		for (j = 0; j < lenCord.y; j++) {
+			if (candidateWeight[i][j] == maxWeight) {
+				candCord[candidateNum].x = i;
+				candCord[candidateNum].y = j;
+				candidateNum++;
+			}
+		}
+	}
+
+
+	printf("\n");
+	printf("\n");
+
+	printf("%c[1;%dm", 27, 37);
+	printf("*\t");
+	printf("%c[0m", 27);
+
+	for (j = 0; j < lenCord.y; j++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", j);
+		printf("%c[0m", 27);
+	}
+	printf("\n");
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", i);
+		printf("%c[0m", 27);
+		for (j = 0; j < PLATE_MAX; j++) {
+			printf("%d\t", candidateWeight[i][j]);
+		}
+		printf("\n");
+	}
+	*/
 }
 
 int whoWin(char plate[][PLATE_MAX], cord2D lenCord, cord2D* cord, int turn)	{
 	// TODO : Need to add 7-stones to loose.
 	char what = turn;
 	int c, i;
+	char cPlate[PLATE_MAX][PLATE_MAX];
+
+	changeBlocking(plate, cPlate, turn);
 
 	for(c = 0; c < 2; c++)	{
 		// East
 		if(!isOutOfPlate(cord[c], 6, EAST)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x][cord[c].y + i] != what)	break;
+				if(cPlate[cord[c].x][cord[c].y + i] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 
 		// West
 		if(!isOutOfPlate(cord[c], 6, WEST)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x][cord[c].y - i] != what)	break;
+				if(cPlate[cord[c].x][cord[c].y - i] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 		
 		// South
 		if(!isOutOfPlate(cord[c], 6, SOUTH)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x + i][cord[c].y] != what)	break;
+				if(cPlate[cord[c].x + i][cord[c].y] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 
 		// North
 		if(!isOutOfPlate(cord[c], 6, NORTH)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x - i][cord[c].y] != what)	break;
+				if(cPlate[cord[c].x - i][cord[c].y] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 
 		// East-South
 		if(!isOutOfPlate(cord[c], 6, EAST_SOUTH)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x + i][cord[c].y + i] != what)	break;
+				if(cPlate[cord[c].x + i][cord[c].y + i] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 
 		// East-North
 		if(!isOutOfPlate(cord[c], 6, EAST_NORTH)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x - i][cord[c].y + i] != what)	break;
+				if(cPlate[cord[c].x - i][cord[c].y + i] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 
 		// West-South
 		if(!isOutOfPlate(cord[c], 6, WEST_SOUTH)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x + i][cord[c].y - i] != what)	break;
+				if(cPlate[cord[c].x + i][cord[c].y - i] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 		// West-Nort
 		if(!isOutOfPlate(cord[c], 6, WEST_NORTH)){
 			for(i = 0; i < 6; i++)	{
-				if(plate[cord[c].x - i][cord[c].y - i] != what)	break;
+				if(cPlate[cord[c].x - i][cord[c].y - i] != what)	break;
 			}
-			if(i == 6) return plate[cord[c].x][cord[c].y];
+			if(i == 6) return cPlate[cord[c].x][cord[c].y];
 		}
 	}
 	return NO;
@@ -144,7 +251,6 @@ void changeTurn(int * turn)	{
 	if(*turn == BLACK) *turn = WHITE;
 	else *turn = BLACK;	
 }
-
 
 int getStateDir(char* state, char plate[][PLATE_MAX], int stateLen, int dir, int stateValue)	{
 	char * str = (char *)malloc(sizeof(char) * stateLen);
@@ -247,11 +353,21 @@ int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, in
 	return -1;
 }
 
-void initPlate(char plate[][PLATE_MAX])	{
-	int i, j;
+void initPlate(char plate[][PLATE_MAX], int blockNum)	{
+	int i, j, randNum;
+	int blockCount = 0;
+	
+	// Make block( "C" ).
 	for(i = 0; i < PLATE_MAX; i++)	{
 		for(j = 0; j < PLATE_MAX; j++)	{
-			plate[i][j] = EMPTY;
+			randNum = rand() % 100;
+			if (randNum >= (int)((blockNum * 100) / (PLATE_MAX * PLATE_MAX)) && blockCount < blockNum) {
+				plate[i][j] = BLOCK;
+				blockCount++;
+			}
+			else {
+				plate[i][j] = EMPTY;
+			}
 		}
 	}
 }
@@ -286,5 +402,14 @@ int isOutOfPlate(cord2D cord, int next, int dir) {
 		break;
 	default:
 		break;
+	}
+}
+
+void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn) {
+	int i, j;
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
+			changePlate[i][j] = plate[i][j] == BLOCK ? turn : plate[i][j];
+		}
 	}
 }

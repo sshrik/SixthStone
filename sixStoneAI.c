@@ -27,13 +27,13 @@ int getCandidate(char plate[][PLATE_MAX], cord2D lenCord, cord2D *candCord, int 
 			}
 		}
 	}
-
+	
 	return candidateNum;
 }
 
 int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
 	int weight = 0;
-	int w, b, i;
+	int w, b, i, dir;
 	w = 0; b = 0;
 
 	if(!isOutOfPlate(temp, 2, EAST))	{
@@ -77,6 +77,16 @@ int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
 		for(i = 1; i <= b; i++)	{
 			weight -= i;
 		}
+		for (dir = 1; dir <= 8; dir++) {
+			if (isWinState(plate, temp, WHITE, dir, 3) == YES)		weight += 6;
+			else if (isWinState(plate, temp, WHITE, dir, 2) == YES)	weight += 3;
+			else if (isWinState(plate, temp, WHITE, dir, 1) == YES)	weight += 1;
+		}
+		for (dir = 1; dir <= 8; dir++) {
+			if (isWinState(plate, temp, BLACK, dir, 3) == YES)		weight -= 6;
+			else if (isWinState(plate, temp, BLACK, dir, 2) == YES)	weight -= 3;
+			else if (isWinState(plate, temp, BLACK, dir, 1) == YES)	weight -= 1;
+		}
 	}
 	else if(turn == BLACK)	{
 		for(i = 1; i <= w; i++)	{
@@ -84,6 +94,16 @@ int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
 		}
 		for(i = 1; i <= b; i++)	{
 			weight += i;
+		}
+		for (dir = 1; dir <= 8; dir++) {
+			if (isWinState(plate, temp, WHITE, dir, 3) == YES)		weight -= 6;
+			else if (isWinState(plate, temp, WHITE, dir, 2) == YES)	weight -= 3;
+			else if (isWinState(plate, temp, WHITE, dir, 1) == YES)	weight -= 1;
+		}
+		for (dir = 1; dir <= 8; dir++) {
+			if (isWinState(plate, temp, BLACK, dir, 3) == YES)		weight += 6;
+			else if (isWinState(plate, temp, BLACK, dir, 2) == YES)	weight += 3;
+			else if (isWinState(plate, temp, BLACK, dir, 1) == YES)	weight += 1;
 		}
 	}
 	return weight;
@@ -99,7 +119,7 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 			for(k = 1; k <= 8; k++)	{
 				temp.x = i;
 				temp.y = j;
-				if(isWinState(plate, temp, turn, k) == YES)	{
+				if(isWinState(plate, temp, turn, k, 4) == YES || isWinState(plate, temp, turn, k, 5) == YES)	{
 					// In case of outside starting case, move opposite direction.
 					switch (k) {
 						case EAST:
@@ -157,7 +177,7 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 	return dir;
 }
 
-int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
+int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum)	{
 	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
 	int i, count = 0;
 	
@@ -174,7 +194,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			case WEST:	// Y--
 				if (plate[cord.x][cord.y - 6] == turn) return NO;
@@ -185,7 +205,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			case SOUTH:	// X++
 				if (plate[cord.x + 6][cord.y] == turn) return NO;
@@ -196,7 +216,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			case NORTH:	// X--
 				if (plate[cord.x - 6][cord.y] == turn) return NO;
@@ -207,7 +227,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 
 			case EAST_SOUTH:
@@ -219,7 +239,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			case EAST_NORTH:
 				if (plate[cord.x - 6][cord.y + 6] == turn) return NO;
@@ -230,7 +250,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			case WEST_SOUTH:
 				if (plate[cord.x + 6][cord.y - 6] == turn) return NO;
@@ -241,7 +261,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			case WEST_NORTH:
 				if (plate[cord.x - 6][cord.y - 6] == turn) return NO;
@@ -252,7 +272,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 						break;
 					}
 				}
-				return count >= 4 ? YES : NO;
+				return count == continum ? YES : NO;
 				break;
 			default:
 				break;
@@ -271,7 +291,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			case WEST:	// Y--
@@ -284,7 +304,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			case SOUTH:	// X++
@@ -297,7 +317,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			case NORTH:	// X--
@@ -310,7 +330,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 
@@ -324,7 +344,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			case EAST_NORTH:	// X-- Y++
@@ -337,7 +357,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			case WEST_SOUTH:	// X++ Y--
@@ -350,7 +370,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			case WEST_NORTH:	// X-- Y--
@@ -363,7 +383,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 							break;
 						}
 					}
-					return count >= 4 ? YES : NO;
+					return count == continum ? YES : NO;
 				}
 				break;
 			default:
@@ -715,7 +735,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 	// Make candidate proper number ( 50 );
 	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX], myCandCord[PLATE_MAX * PLATE_MAX];
 	cord2D temp;
-	char tempPlate[PLATE_MAX][PLATE_MAX];
+	char tempPlate[PLATE_MAX][PLATE_MAX], cPlate[PLATE_MAX][PLATE_MAX];
 	int oppoCandNum = 0;
 	int myCandNum = 0;
 	int highestWeight = 0;
@@ -730,41 +750,58 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 	index[0] = 0;	index[1] = 0;
 
 	//Search in case we can win.
-	if((loseDir = getWinState(plate, &temp, turn)) != NO) {
+	changeBlocking(plate, cPlate, turn);
+	if((loseDir = getWinState(cPlate, &temp, turn)) != NO) {
 		printf("Winning State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
-		//system("pause");
+		system("pause");
 		doWin(plate, temp, loseDir, next, turn);
 	}
-
-	// Check oppo`s win state. ( 4 ~ 5 continuos state. )
-	else if((loseDir = getWinState(plate, &temp, oppo)) != NO)	{
-		printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
-		//system("pause");
-		doSheild(plate, temp, loseDir, next, turn);
+	else {
+		// Check oppo`s win state. ( 4 ~ 5 continuos state. )
+		changeBlocking(plate, cPlate, oppo);
+		if ((loseDir = getWinState(cPlate, &temp, oppo)) != NO) {
+			printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+			system("pause");
+			doSheild(plate, temp, loseDir, next, turn);
+		}
 	}
 
-	if(next[1].x == -1 && next[0].x != -1) {
-		// Calculate opposite turn`s highest plate.
-		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
-		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
-	
-		for(i = 0; i < oppoCandNum; i++)	{
-			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
-			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
-			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
-			if(myWeight > highestWeight) index[1] = i;
-		}	
-		next[1].x = oppoCandCord[index[1]].x;
-		next[1].y = oppoCandCord[index[1]].y;
-		put(plate, next[1], turn);
+	if (next[1].x == -1 && next[0].x != -1) {
+		// Check if is there any other lose state.
+		changeBlocking(plate, cPlate, oppo);
+		if ((loseDir = getWinState(plate, &temp, oppo)) != NO) {
+			printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+			system("pause");
+			// In this case, next[0] will using twice.
+			doSheild(plate, temp, loseDir, next, turn);
+		}
+		else {
+			changeBlocking(plate, cPlate, oppo);
+			// Calculate opposite turn`s highest plate.
+			oppoCandNum = getCandidate(cPlate, lenCord, oppoCandCord, oppo);
+			oppoWeight = getCandWeight(cPlate, oppoCandCord[oppoCandNum - 1], oppo);
+
+			for (i = 0; i < oppoCandNum; i++) {
+				changeBlocking(plate, cPlate, turn);
+				memcpy(tempPlate, cPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+				myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
+				myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);
+				if (myWeight > highestWeight) index[1] = i;
+			}
+			next[1].x = oppoCandCord[index[1]].x;
+			next[1].y = oppoCandCord[index[1]].y;
+			put(plate, next[1], turn);
+		}
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
 		// Calculate opposite turn`s highest plate.
+		changeBlocking(plate, cPlate, oppo);
 		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
 		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
 
 		for(i = 0; i < oppoCandNum; i++)	{
+			changeBlocking(plate, cPlate, turn);
 			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
 			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
@@ -777,12 +814,14 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 	
 		put(plate, next[0], turn);
 		highestWeight = 0;
-	
+
+		changeBlocking(plate, cPlate, oppo);
 		// Calculate opposite turn`s highest plate.
 		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
 		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
 	
 		for(i = 0; i < oppoCandNum; i++)	{
+			changeBlocking(plate, cPlate, turn);
 			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
 			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
