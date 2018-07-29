@@ -12,7 +12,9 @@ int main()	{
 	nextPut[1].x = -1;
 	nextPut[1].y = -1;
 	initPlate(plate);
-		
+
+	srand(time(NULL));
+
 	do {
 		changeTurn(&turn);
 		display(plate, lenCord);

@@ -50,7 +50,8 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
 int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
 int isOutOfPlate(cord2D cord, int next, int dir);
 int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
-void doWin(char plate[][PLATE_MAX], cord2D * cord , int dir, cord2D * next, int turn);
+void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int turn);
+void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn);
 void getNext(char plate[][PLATE_MAX], cord2D *candCord, cord2D *next, int turn);
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn);
 
