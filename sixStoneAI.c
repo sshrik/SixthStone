@@ -96,15 +96,58 @@ int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 
 	for(i = 0; i < PLATE_MAX; i++)	{
 		for(j = 0; j < PLATE_MAX; j++)	{
-			for(k = 1; k < 8; k++)	{
+			for(k = 1; k <= 8; k++)	{
 				temp.x = i;
 				temp.y = j;
 				if(isWinState(plate, temp, turn, k) == YES)	{
-					// In case start with (0, _) or (_, 0), change start with (-1, _) or(_, -1)
-					if (i == 0)	cord->x = -1;
-					else cord->x = i;
-					if (j == 0)	cord->y = -1;
-					else cord->y = j;
+					// In case of outside starting case, move opposite direction.
+					switch (k) {
+						case EAST:
+							if (i == 0)	cord->x = i - 1;
+							else cord->x = i;
+							cord->y = j;
+							break;
+						case WEST:
+							if (i == PLATE_MAX - 1)	cord->x = i + 1;
+							else cord->x = i;
+							cord->y = j;
+							break;
+						case SOUTH:
+							cord->x = i;
+							if (j == 0) cord->y = i - 1;
+							else cord->y = i;
+							break;
+						case NORTH:
+							cord->x = i;
+							if (i == PLATE_MAX - 1)	cord->y = i + 1;
+							else cord->y = i;
+							break;
+
+						case EAST_SOUTH:
+							if (i == 0)	cord->x = i - 1;
+							else cord->x = i;
+							if (j == 0) cord->y = i - 1;
+							else cord->y = i;
+							break;
+						case EAST_NORTH:
+							if (i == 0)	cord->x = i - 1;
+							else cord->x = i;
+							if (i == PLATE_MAX - 1)	cord->y = i + 1;
+							else cord->y = i;
+							break;
+						case WEST_SOUTH:
+							if (i == PLATE_MAX - 1)	cord->x = i + 1;
+							else cord->x = i;
+							if (j == 0) cord->y = i - 1;
+							else cord->y = i;
+							break;
+						case WEST_NORTH:
+							if (i == PLATE_MAX - 1)	cord->x = i + 1;
+							else cord->x = i;
+							if (i == PLATE_MAX - 1)	cord->y = i + 1;
+							else cord->y = i;
+							break;
+					}
 					return k;
 				}
 			}
@@ -547,11 +590,6 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 	}
 	if (next[0].x != -1)	put(plate, next[0], turn);
 	if (next[1].x != -1)	put(plate, next[1], turn);
-}
-
-void getNext(char plate[][PLATE_MAX], cord2D *candCord, cord2D *next, int turn)	{
-	// Put next 2 stone with given candidate Cordinate, candCord at "turn"`th turn.
-
 }
 
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn)	{
