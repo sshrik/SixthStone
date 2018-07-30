@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
+#include<stdafx.h>
 
 #define PLATE_MAX 19
 #define STATE_MAX 10
