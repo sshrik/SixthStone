@@ -752,7 +752,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 	//Search in case we can win.
 	changeBlocking(plate, cPlate, turn);
 	if((loseDir = getWinState(cPlate, &temp, turn)) != NO) {
-		printf("Winning State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+		printf("Winning State was found at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
 		system("pause");
 		doWin(plate, temp, loseDir, next, turn);
 	}
@@ -760,7 +760,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 		// Check oppo`s win state. ( 4 ~ 5 continuos state. )
 		changeBlocking(plate, cPlate, oppo);
 		if ((loseDir = getWinState(cPlate, &temp, oppo)) != NO) {
-			printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+			printf("Losing State was found at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
 			system("pause");
 			doSheild(plate, temp, loseDir, next, turn);
 		}
@@ -770,7 +770,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D
 		// Check if is there any other lose state.
 		changeBlocking(plate, cPlate, oppo);
 		if ((loseDir = getWinState(plate, &temp, oppo)) != NO) {
-			printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+			printf("Losing State was found at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
 			system("pause");
 			// In this case, next[0] will using twice.
 			doSheild(plate, temp, loseDir, next, turn);
