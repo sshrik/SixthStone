@@ -1,34 +1,98 @@
 #include "sixthStone.h"
 
-int getCandidate(char plate[][PLATE_MAX], cord2D lenCord, cord2D *candCord, int turn)	{
+void setCandidate(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 	// Check where can turn`th player put stone.
 	int candidateWeight[PLATE_MAX][PLATE_MAX] = {{0,}};
 	int i, j, candidateNum = 0;
 	int maxWeight = -1;
+	int dir;
 	cord2D temp;
 
-	for(i = 0; i < lenCord.x; i++)	{
-		for(j = 0; j < lenCord.y; j++)	{
-			temp.x = i;
-			temp.y = j;
-			if(canPut(plate, lenCord, temp, turn) == YES)	{
-				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
-				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
-			}
+	for (i = 0; i < 4; i++) {
+		if (i < 2) {
+			dir = getHighestWeightDirection(plate, *cord, turn);
+			findEmptyCordInDirection(plate, cord, dir, turn);
 		}
 	}
+}
 
-	for(i = 0; i < lenCord.x; i++)	{
-		for(j = 0; j < lenCord.y; j++)	{
-			if(candidateWeight[i][j] == maxWeight) {
-				candCord[candidateNum].x = i;
-				candCord[candidateNum].y = j;
-				candidateNum++;
+void findEmptyCordInDirection(char plate[][PLATE_MAX], cord2D *temp, int dir, int turn) {
+	//find the empty Coordination in this direction...
+	int i = 0;
+	switch (dir) {
+	case EAST:	// Y++
+		if (!isOutOfPlate(*temp, 6, EAST)) {
+			while (plate[temp->x][temp->y + i] == turn) {
+				i++;
 			}
+			temp->y = temp->y + i;
 		}
+		break;
+	case WEST:	// Y--
+		if (!isOutOfPlate(*temp, 6, WEST)) {
+			while (plate[temp->x][temp->y - i] == turn) {
+				i++;
+			}
+			temp->y = temp->y - i;
+		}
+		break;
+	case SOUTH:	// X++
+		if (!isOutOfPlate(*temp, 6, SOUTH)) {
+			while (plate[temp->x + i][temp->y] == turn) {
+				i++;
+			}
+			temp->x = temp->x + i;
+		}
+		break;
+	case NORTH:	// X--
+		if (!isOutOfPlate(*temp, 6, SOUTH)) {
+			while (plate[temp->x - i][temp->y] == turn) {
+				i++;
+			}
+			temp->x = temp->x - i;
+		}
+		break;
+
+	case EAST_SOUTH:	// X++ Y++
+		if (!isOutOfPlate(*temp, 6, EAST_SOUTH)) {
+			while (plate[temp->x + i][temp->y + i] == turn) {
+				i++;
+			}
+			temp->x = temp->x + i;
+			temp->y = temp->y + i;
+		}
+		break;
+	case EAST_NORTH:	// X-- Y++
+		if (!isOutOfPlate(*temp, 6, SOUTH)) {
+			while (plate[temp->x - i][temp->y + i] == turn) {
+				i++;
+			}
+			temp->x = temp->x - i;
+			temp->y = temp->y + i;
+		}
+		break;
+	case WEST_SOUTH:	// X++ Y--
+		if (!isOutOfPlate(*temp, 6, SOUTH)) {
+			while (plate[temp->x + i][temp->y - i] == turn) {
+				i++;
+			}
+			temp->x = temp->x + i;
+			temp->y = temp->y - i;
+		}
+		break;
+	case WEST_NORTH:	// X-- Y-- 
+		if (!isOutOfPlate(*temp, 6, SOUTH)) {
+			while (plate[temp->x - i][temp->y - i] == turn) {
+				i++;
+			}
+			temp->x = temp->x - i;
+			temp->y = temp->y - i;
+		}
+		break;
 	}
-	
-	return candidateNum;
+	if (i > 5) {
+		printf("findEmptyCordInDirectionError!\n");
+	}
 }
 
 int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
