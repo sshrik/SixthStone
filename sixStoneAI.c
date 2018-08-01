@@ -504,7 +504,7 @@ int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
 	}
 }
 
-void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int turn)	{
+void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D *cord, int turn)	{
 	// Start from plate[cord.x, cord.y], direction dir is winning state, so put nextX and nextY to finish game.
 	int i, count = 0;
 
@@ -512,8 +512,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case EAST:	// Y++
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x][temp.y + i] == EMPTY) {
-					next[count].x = temp.x;
-					next[count].y = temp.y + i;
+					cord[count].x = temp.x;
+					cord[count].y = temp.y + i;
 					count++;
 				}
 				if (count == 2) break;
@@ -522,8 +522,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case WEST:	// Y--
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x][temp.y - i] == EMPTY) {
-					next[count].x = temp.x;
-					next[count].y = temp.y - i;
+					cord[count].x = temp.x;
+					cord[count].y = temp.y - i;
 					count++;
 				}
 				if (count == 2) break;
@@ -532,8 +532,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case SOUTH:	// X++
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y;
+					cord[count].x = temp.x + i;
+					cord[count].y = temp.y;
 					count++;
 				}
 				if (count == 2) break;
@@ -542,8 +542,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case NORTH: // X--
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y;
+					cord[count].x = temp.x - i;
+					cord[count].y = temp.y;
 					count++;
 				}
 				if (count == 2) break;
@@ -553,8 +553,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case EAST_SOUTH:	// X++ y++
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y + i] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y + i;
+					cord[count].x = temp.x + i;
+					cord[count].y = temp.y + i;
 					count++;
 				}
 				if (count == 2) break;
@@ -563,8 +563,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case EAST_NORTH:	// X-- y++
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y + i] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y + i;
+					cord[count].x = temp.x - i;
+					cord[count].y = temp.y + i;
 					count++;
 				}
 				if (count == 2) break;
@@ -573,8 +573,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case WEST_SOUTH:	// X++ y--
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y - i] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y - i;
+					cord[count].x = temp.x + i;
+					cord[count].y = temp.y - i;
 					count++;
 				}
 				if (count == 2) break;
@@ -583,8 +583,8 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		case WEST_NORTH:	// x-- y--
 			for (i = 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y - i] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y - i;
+					cord[count].x = temp.x - i;
+					cord[count].y = temp.y - i;
 					count++;
 				}
 				if (count == 2) break;
@@ -593,11 +593,12 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		default:
 			break;
 	}
-	if (next[0].x != -1)	put(plate, next[0], turn);
-	if (next[1].x != -1)	put(plate, next[1], turn);
+	if (cord[0].x == -1 || cord[1].x == -1) {
+		printf("doWin_error\n");
+	}
 }
 
-void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn) {
+void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D *next, int turn) {
 	// Start from plate[cord.x, cord.y], direction dir is winning state, so put nextX and nextY to finish game.
 	int i, count = 0;
 	// For processing ___OOOO_.
@@ -800,8 +801,10 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		default:
 			break;
 	}
-	if (next[0].x != -1)	put(plate, next[0], turn);
-	if (next[1].x != -1)	put(plate, next[1], turn);
+
+	if (next[0].x == -1 || next[1].x == -1) {
+		printf("doSheild_error\n");
+	}
 }
 
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn)	{
