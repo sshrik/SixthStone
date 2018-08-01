@@ -251,218 +251,119 @@ int getHighestWeight(char plate[][PLATE_MAX], cord2D cord, int turn) {
 
 	return maxWeight;
 }
-int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum)	{
+int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum) {
 	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
 	int i, count = 0;
-	
-	if ((cord.x == 0 || cord.y == 0 || cord.x == PLATE_MAX - 1 || cord.y == PLATE_MAX - 1) && plate[cord.x][cord.y] == turn) {
-		// For start with cordinate (0, _), (_, 0), (18, _) or (_, 18) State check.
-		if (isOutOfPlate(cord, 7, dir)) return NO;
-		switch (dir) {
-			case EAST:	// Y++
-				if (plate[cord.x][cord.y + 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x][cord.y + i] == turn)	count++;
-					else if(plate[cord.x][cord.y + i] != EMPTY)	{
-						count = 0;
-						break;
-					}
+	// need to see 6 space, not 8...TT 
+	if (isOutOfPlate(cord, 8, dir))	return NO;
+	switch (dir) {
+	case EAST:	// Y++
+		if (plate[cord.x][cord.y + 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x][cord.y + i] == turn) count++;
+				else if (plate[cord.x][cord.y + i] != EMPTY) {
+					count = 0;
+					break;
 				}
-				return count == continum ? YES : NO;
-				break;
-			case WEST:	// Y--
-				if (plate[cord.x][cord.y - 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x][cord.y - i] == turn)	count++;
-					else if (plate[cord.x][cord.y - i] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-			case SOUTH:	// X++
-				if (plate[cord.x + 6][cord.y] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x + i][cord.y] == turn)	count++;
-					else if (plate[cord.x + i][cord.y] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-			case NORTH:	// X--
-				if (plate[cord.x - 6][cord.y] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x - i][cord.y] == turn)	count++;
-					else if (plate[cord.x - i][cord.y] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-
-			case EAST_SOUTH:
-				if (plate[cord.x + 6][cord.y + 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x + i][cord.y + i] == turn)	count++;
-					else if (plate[cord.x + i][cord.y + i] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-			case EAST_NORTH:
-				if (plate[cord.x - 6][cord.y + 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x - i][cord.y + i] == turn)	count++;
-					else if (plate[cord.x - i][cord.y + i] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-			case WEST_SOUTH:
-				if (plate[cord.x + 6][cord.y - 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x + i][cord.y - i] == turn)	count++;
-					else if (plate[cord.x + i][cord.y - i] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-			case WEST_NORTH:
-				if (plate[cord.x - 6][cord.y - 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x - i][cord.y - i] == turn)	count++;
-					else if (plate[cord.x - i][cord.y - i] != EMPTY) {
-						count = 0;
-						break;
-					}
-				}
-				return count == continum ? YES : NO;
-				break;
-			default:
-				break;
+			}
+			return count == continum ? YES : NO;
 		}
-	}
-	else {
-		if (isOutOfPlate(cord, 8, dir))	return NO;
-		switch (dir) {
-			case EAST:	// Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y + 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x][cord.y + i] == turn) count++;
-						else if (plate[cord.x][cord.y + i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
+		break;
+	case WEST:	// Y--
+		if (plate[cord.x][cord.y - 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x][cord.y - i] == turn) count++;
+				else if (plate[cord.x][cord.y - i] != EMPTY) {
+					count = 0;
+					break;
 				}
-				break;
-			case WEST:	// Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y - 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x][cord.y - i] == turn) count++;
-						else if (plate[cord.x][cord.y - i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case SOUTH:	// X++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x + i][cord.y] == turn) count++;
-						else if (plate[cord.x + i][cord.y] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case NORTH:	// X--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x - i][cord.y] == turn) count++;
-						else if (plate[cord.x - i][cord.y] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-
-			case EAST_SOUTH:	// X++ Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y + 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x + i][cord.y + i] == turn) count++;
-						else if (plate[cord.x + i][cord.y + i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case EAST_NORTH:	// X-- Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y + 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x - i][cord.y + i] == turn) count++;
-						else if (plate[cord.x - i][cord.y + i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case WEST_SOUTH:	// X++ Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y - 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x + i][cord.y - i] == turn) count++;
-						else if (plate[cord.x + i][cord.y - i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case WEST_NORTH:	// X-- Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y - 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x - i][cord.y - i] == turn) count++;
-						else if (plate[cord.x - i][cord.y - i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			default:
-				break;
+			}
+			return count == continum ? YES : NO;
 		}
+		break;
+	case SOUTH:	// X++
+		if (plate[cord.x + 7][cord.y] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x + i][cord.y] == turn) count++;
+				else if (plate[cord.x + i][cord.y] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case NORTH:	// X--
+		if (plate[cord.x - 7][cord.y] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x - i][cord.y] == turn) count++;
+				else if (plate[cord.x - i][cord.y] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+
+	case EAST_SOUTH:	// X++ Y++
+		if (plate[cord.x + 7][cord.y + 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x + i][cord.y + i] == turn) count++;
+				else if (plate[cord.x + i][cord.y + i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case EAST_NORTH:	// X-- Y++
+		if (plate[cord.x - 7][cord.y + 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x - i][cord.y + i] == turn) count++;
+				else if (plate[cord.x - i][cord.y + i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case WEST_SOUTH:	// X++ Y--
+		if (plate[cord.x + 7][cord.y - 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x + i][cord.y - i] == turn) count++;
+				else if (plate[cord.x + i][cord.y - i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case WEST_NORTH:	// X-- Y--
+		if (plate[cord.x - 7][cord.y - 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x - i][cord.y - i] == turn) count++;
+				else if (plate[cord.x - i][cord.y - i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	default:
+		break;
 	}
 	return NO;
 }
