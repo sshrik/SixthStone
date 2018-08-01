@@ -708,106 +708,105 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D *next, int t
 	}
 }
 
-void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn)	{
+void sixStoneBot(char plate[][PLATE_MAX], cord2D lenCord, memorizedCord2D *memorizedCord, int turn) {
 	// Main AI. Return at next[2].
 	// Make candidate proper number ( 50 );
 	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX], myCandCord[PLATE_MAX * PLATE_MAX];
-	cord2D temp;
+	cord2D cord;
 	char tempPlate[PLATE_MAX][PLATE_MAX], cPlate[PLATE_MAX][PLATE_MAX];
 	int oppoCandNum = 0;
 	int myCandNum = 0;
-	int highestWeight = 0;
+	int highestWeight = 0, weight = 0, highestMem = 0;
 	int i, oppo, oppoWeight, myWeight, index[2], loseDir, count = 0;
 
 	// turn mean my color, oppo mean other`s color.
-	if(turn == BLACK) oppo = WHITE;
+	if (turn == BLACK) oppo = WHITE;
 	else oppo = BLACK;
 
-	next[0].x = -1;	next[0].y = -1;
-	next[1].x = -1;	next[1].y = -1;
 	index[0] = 0;	index[1] = 0;
 
 	//Search in case we can win.
 	changeBlocking(plate, cPlate, turn);
-	if((loseDir = getWinState(cPlate, &temp, turn)) != NO) {
-		printf("Winning State was found at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
-		system("pause");
-		doWin(plate, temp, loseDir, next, turn);
-	}
-	else {
-		// Check oppo`s win state. ( 4 ~ 5 continuos state. )
-		changeBlocking(plate, cPlate, oppo);
-		if ((loseDir = getWinState(cPlate, &temp, oppo)) != NO) {
-			printf("Losing State was found at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
-			system("pause");
-			doSheild(plate, temp, loseDir, next, turn);
-		}
-	}
-
-	if (next[1].x == -1 && next[0].x != -1) {
-		// Check if is there any other lose state.
-		changeBlocking(plate, cPlate, oppo);
-		if ((loseDir = getWinState(plate, &temp, oppo)) != NO) {
-			printf("Losing State was found at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
-			system("pause");
-			// In this case, next[0] will using twice.
-			doSheild(plate, temp, loseDir, next, turn);
-		}
-		else {
-			changeBlocking(plate, cPlate, oppo);
-			// Calculate opposite turn`s highest plate.
-			oppoCandNum = getCandidate(cPlate, lenCord, oppoCandCord, oppo);
-			oppoWeight = getCandWeight(cPlate, oppoCandCord[oppoCandNum - 1], oppo);
-
-			for (i = 0; i < oppoCandNum; i++) {
-				changeBlocking(plate, cPlate, turn);
-				memcpy(tempPlate, cPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
-				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-				myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
-				myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);
-				if (myWeight > highestWeight) index[1] = i;
-			}
-			next[1].x = oppoCandCord[index[1]].x;
-			next[1].y = oppoCandCord[index[1]].y;
-			put(plate, next[1], turn);
-		}
-	}
-	else if(next[1].x == -1 && next[0].x == -1 ){	
-		// Calculate opposite turn`s highest plate.
-		changeBlocking(plate, cPlate, oppo);
-		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
-		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
-
-		for(i = 0; i < oppoCandNum; i++)	{
-			changeBlocking(plate, cPlate, turn);
-			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
-			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
-			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
-			if(myWeight > highestWeight) index[0] = i;
-		}
-
-		next[0].x = oppoCandCord[index[0]].x;
-		next[0].y = oppoCandCord[index[0]].y;
-	
-		put(plate, next[0], turn);
+	for (i = 0; i < 2; i++) {
+		highestMem = -1;
 		highestWeight = 0;
-
-		changeBlocking(plate, cPlate, oppo);
-		// Calculate opposite turn`s highest plate.
-		oppoCandNum = getCandidate(plate, lenCord, oppoCandCord, oppo);
-		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
-	
-		for(i = 0; i < oppoCandNum; i++)	{
+		for (int mem = 0; mem < MEMORIZED_SIZE; mem++) {
+			if (mem < 2) {
+				cord = memorizedCord->mine[mem];
+			}
+			else {
+				cord = memorizedCord->opposite[mem - 2];
+			}
+			if (cord.x == -1 || cord.y == -1) {
+				//temporary code
+				memorizedCord->mine[i].x = memorizedCord->opposite[i].x + 1;
+				memorizedCord->mine[i].y = memorizedCord->opposite[i].y + 1;
+			}
+			if ((loseDir = getWinState(cPlate, cord, turn)) != NO) {
+				printf("Winning State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
+				system("pause");
+				doWin(plate, cord, loseDir, &memorizedCord->mine[i], turn);
+			}
+			else {
+				// Check oppo`s win state. ( 4 ~ 5 continuos state. )
+				changeBlocking(plate, cPlate, oppo);
+				if ((loseDir = getWinState(cPlate, cord, oppo)) != NO) {
+					printf("Losing State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
+					system("pause");
+					doSheild(plate, cord, loseDir, &memorizedCord->mine[i], turn);
+					break;
+				}
+				else {
+					if (mem < 2) {
+						changeBlocking(plate, cPlate, turn);
+						weight = getHighestWeight(plate, cord, turn);
+					}
+					else {
+						changeBlocking(plate, cPlate, oppo);
+						weight = getHighestWeight(plate, cord, oppo);
+					}
+					if (highestWeight < weight) {
+						highestWeight = weight;
+						highestMem = mem;
+					}
+				}
+			}
+		}
+		switch (highestMem) {
+		case -1:
+			put(plate, memorizedCord->mine[i], turn);
+			break;
+		case 0:
+			setCandidate(cPlate, &memorizedCord->mine[i], turn);
+			put(plate, memorizedCord->mine[i], turn);
+			break;
+		case 1:
+			setCandidate(cPlate, &memorizedCord->mine[i], turn);
+			put(plate, memorizedCord->mine[i], turn);
+			break;
+		case 2:
+			cord = memorizedCord->opposite[i];
+			setCandidate(cPlate, &cord, oppo);
+			memorizedCord->mine[i] = cord;
+			put(plate, memorizedCord->mine[i], turn);
+			break;
+		case 3:
+			cord = memorizedCord->opposite[i];
+			setCandidate(cPlate, &cord, oppo);
+			memorizedCord->mine[i] = cord;
+			put(plate, memorizedCord->mine[i], turn);
+			break;
+			/* TODO : check this plz
+			for (i = 0; i < oppoCandNum; i++) {
 			changeBlocking(plate, cPlate, turn);
-			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			memcpy(tempPlate, cPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
 			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
-			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
-			if(myWeight > highestWeight) index[1] = i;
-		}	
-		next[1].x = oppoCandCord[index[1]].x;
-		next[1].y = oppoCandCord[index[1]].y;
-		put(plate, next[1], turn);
+			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);
+			if (myWeight > highestWeight) index[1] = i;
+			}
+			*/
+
+		}
 	}
 }
