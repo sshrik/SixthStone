@@ -173,74 +173,84 @@ int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
 	return weight;
 }
 
-int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
+int getWinState(char plate[][PLATE_MAX], cord2D cord, int turn)	{
 	// Find is plate have win state. If exist, return dir. Else, return "NO";
 	int i, j, k, dir = NO;
-	cord2D temp;
 
-	for(i = 0; i < PLATE_MAX; i++)	{
-		for(j = 0; j < PLATE_MAX; j++)	{
-			for(k = 1; k <= 8; k++)	{
-				temp.x = i;
-				temp.y = j;
-				if(isWinState(plate, temp, turn, k, 4) == YES || isWinState(plate, temp, turn, k, 5) == YES)	{
-					// In case of outside starting case, move opposite direction.
-					switch (k) {
-						case EAST:
-							cord->x = i;
-							if (j == 0) cord->y = j - 1;
-							else cord->y = j;
-							break;
-						case WEST:
-							cord->x = i;
-							if (j == PLATE_MAX - 1)	cord->y = j + 1;
-							else cord->y = j;
-							break;
-						case SOUTH:
-							if (i == 0)	cord->x = i - 1;
-							else cord->x = i;
-							cord->y = j;
-							break;
-						case NORTH:
-							if (i == PLATE_MAX - 1)	cord->x = i + 1;
-							else cord->x = i;
-							cord->y = j;
-							break;
+	for (int i = 0; i < MEMORIZED_SIZE / 2; i++) {
+		for (k = 1; k <= 8; k++) {
+			if (isWinState(plate, cord, turn, k, 4) == YES || isWinState(plate, cord, turn, k, 5) == YES) {
+				return k;
+			}
+		}
 
-						case EAST_SOUTH:
-							if (i == 0)	cord->x = i - 1;
-							else cord->x = i;
-							if (j == 0) cord->y = j - 1;
-							else cord->y = j;
-							break;
-						case EAST_NORTH:
-							if (i == 0)	cord->x = i - 1;
-							else cord->x = i;
-							if (j == PLATE_MAX - 1)	cord->y = j + 1;
-							else cord->y = j;
-							break;
-						case WEST_SOUTH:
-							if (i == PLATE_MAX - 1)	cord->x = i + 1;
-							else cord->x = i;
-							if (j == 0) cord->y = j - 1;
-							else cord->y = j;
-							break;
-						case WEST_NORTH:
-							if (i == PLATE_MAX - 1)	cord->x = i + 1;
-							else cord->x = i;
-							if (j == PLATE_MAX - 1)	cord->y = j + 1;
-							else cord->y = j;
-							break;
-					}
-					return k;
-				}
+	}
+	return dir;
+}
+
+int getHighestWeightDirection(char plate[][PLATE_MAX], cord2D cord, int turn) {
+	int k;
+	int maxWeight = 0, result = 1;
+
+	for (k = 1; k <= 8; k++) {
+		if (isWinState(plate, cord, turn, k, 5) == YES) {
+			return k;
+		}
+		else if (isWinState(plate, cord, turn, k, 4) == YES) {
+			return k;
+		}
+		else if (isWinState(plate, cord, turn, k, 3) == YES) {
+			if (3 > maxWeight) {
+				maxWeight = 3;
+				result = k;
+			}
+		}
+		else if (isWinState(plate, cord, turn, k, 2) == YES) {
+			if (2 > maxWeight) {
+				maxWeight = 2;
+				result = k;
+			}
+		}
+		else if (isWinState(plate, cord, turn, k, 1) == YES) {
+			if (1 > maxWeight) {
+				maxWeight = 1;
+				result = k;
 			}
 		}
 	}
 
-	return dir;
+	return result;
 }
+int getHighestWeight(char plate[][PLATE_MAX], cord2D cord, int turn) {
+	int k;
+	int maxWeight = 0;
 
+	for (k = 1; k <= 8; k++) {
+		if (isWinState(plate, cord, turn, k, 5) == YES) {
+			return 5;
+		}
+		else if (isWinState(plate, cord, turn, k, 4) == YES) {
+			return 4;
+		}
+		else if (isWinState(plate, cord, turn, k, 3) == YES) {
+			if (3 > maxWeight) {
+				maxWeight = 3;
+			}
+		}
+		else if (isWinState(plate, cord, turn, k, 2) == YES) {
+			if (2 > maxWeight) {
+				maxWeight = 2;
+			}
+		}
+		else if (isWinState(plate, cord, turn, k, 1) == YES) {
+			if (1 > maxWeight) {
+				maxWeight = 1;
+			}
+		}
+	}
+
+	return maxWeight;
+}
 int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum)	{
 	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
 	int i, count = 0;
