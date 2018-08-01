@@ -246,10 +246,18 @@ int canPut(char plate[][PLATE_MAX], cord2D cord, int what)	{
 	}
 	return YES;
 }
+int changeTurn(int turn, memorizedCord2D *memorizedCord)	{
+	cord2D temp;
 
-void changeTurn(int * turn)	{
-	if(*turn == BLACK) *turn = WHITE;
-	else *turn = BLACK;	
+	for (int i = 0; i < 2; i++) {
+		temp = memorizedCord->opposite[i];
+		memorizedCord->opposite[i] = memorizedCord->mine[i];
+		memorizedCord->mine[i] = temp;
+	}
+
+	if(turn == BLACK) return WHITE;
+	else return BLACK;
+
 }
 
 int getStateDir(char* state, char plate[][PLATE_MAX], int stateLen, int dir, int stateValue)	{
