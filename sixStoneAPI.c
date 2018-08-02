@@ -362,8 +362,9 @@ int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, in
 }
 
 void initPlate(char plate[][PLATE_MAX], int blockNum)	{
-	int i, j, randNum;
-	int blockCount = 0;
+	int i, j, k;
+	cord2D temp = { 0, 0 };
+	// Number need to be 0, 2, 4, 6, 8, 10
 	int randomBlockSize = rand() % 6 * 2;
 
 	// Make block( "C" ).
@@ -373,10 +374,13 @@ void initPlate(char plate[][PLATE_MAX], int blockNum)	{
 		}
 	}
 
-	//in real match, the random block stones number should be even number.
-	//So we have to check if the randomBlcok(x,y) is duplicated, but let's pass it!!.
-	for (int k = 0; k < randomBlockSize; k++) {
-		plate[rand() % PLATE_MAX][rand() % PLATE_MAX] = BLOCK;
+	// Set random even number blocking.
+	for (k = 0; k < randomBlockSize; k++) {
+		 do{
+			temp.x = rand() % PLATE_MAX;
+			temp.y = rand() % PLATE_MAX;
+		 } while (plate[temp.x][temp.y] != EMPTY);
+		 plate[rand() % PLATE_MAX][rand() % PLATE_MAX] = BLOCK;
 	}
 }
 

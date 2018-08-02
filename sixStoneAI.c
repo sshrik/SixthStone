@@ -724,24 +724,22 @@ void sixStoneBot(char plate[][PLATE_MAX], cord2D lenCord, memorizedCord2D *memor
 	else oppo = BLACK;
 
 	index[0] = 0;	index[1] = 0;
+	
+	// Change "C" into turn`s stone.
+	changeBlocking(plate, cPlate, turn);
 
 	//Search in case we can win.
-	changeBlocking(plate, cPlate, turn);
 	for (i = 0; i < 2; i++) {
 		highestMem = -1;
 		highestWeight = 0;
 		for (int mem = 0; mem < MEMORIZED_SIZE; mem++) {
-			if (mem < 2) {
-				cord = memorizedCord->mine[mem];
-			}
-			else {
-				cord = memorizedCord->opposite[mem - 2];
-			}
+			cord = mem < 2 ? memorizedCord->mine[mem] : memorizedCord->opposite[mem - 2];
 			if (cord.x == -1 || cord.y == -1) {
 				//temporary code
 				memorizedCord->mine[i].x = memorizedCord->opposite[i].x + 1;
 				memorizedCord->mine[i].y = memorizedCord->opposite[i].y + 1;
 			}
+			// Find win state -> Find lose state -> Find next stone location.
 			if ((loseDir = getWinState(cPlate, cord, turn)) != NO) {
 				printf("Winning State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
 				system("pause");

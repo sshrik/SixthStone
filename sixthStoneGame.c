@@ -1,14 +1,6 @@
 #include "sixthStone.h"
 void initMemorizedCord(memorizedCord2D *memorizedCord) {
-	memorizedCord->mine[0].x = -1;
-	memorizedCord->mine[0].y = -1;
-	memorizedCord->mine[1].x = -1;
-	memorizedCord->mine[1].y = -1;
-	memorizedCord->opposite[0].x = -1;
-	memorizedCord->opposite[0].x = -1;
-	memorizedCord->opposite[1].y = -1;
-	memorizedCord->opposite[1].y = -1;
-
+	memset(memorizedCord, -1, sizeof(memorizedCord2D));
 }
 
 int main()	{
@@ -20,8 +12,7 @@ int main()	{
 	initMemorizedCord(&memorizedCord);
 
 	srand(time(NULL));
-	lenCord.x = PLATE_MAX;
-	lenCord.y = PLATE_MAX;
+	lenCord.x = PLATE_MAX;	lenCord.y = PLATE_MAX;
 	
 	blockNum = 5;
 
@@ -40,7 +31,7 @@ int main()	{
 					printf("%c[1;%dm", 27, 31);
 					printf("You can`t put there.\n");
 					printf("%c[0m",27);
-					scanf(" %d %d", &memorizedCord.mine[0], &memorizedCord.mine[1]);
+					scanf(" %d %d", &memorizedCord.mine[0].x, &memorizedCord.mine[1].y);
 				}
 				put(plate, memorizedCord.mine[i], turn);
 				display(plate);
