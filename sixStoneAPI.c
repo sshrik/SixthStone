@@ -282,6 +282,7 @@ void initPlate(char plate[][PLATE_MAX], int blockNum)	{
 	int i, j, randNum;
 	int blockCount = 0;
 	int randomBlockSize = rand() % 6 * 2;
+	cord2D temp;
 
 	// Make block( "C" ).
 	for(i = 0; i < PLATE_MAX; i++)	{
@@ -290,10 +291,12 @@ void initPlate(char plate[][PLATE_MAX], int blockNum)	{
 		}
 	}
 
-	//in real match, the random block stones number should be even number.
-	//So we have to check if the randomBlcok(x,y) is duplicated, but let's pass it!!.
 	for (int k = 0; k < randomBlockSize; k++) {
-		plate[rand() % PLATE_MAX][rand() % PLATE_MAX] = BLOCK;
+		do {
+			temp.x = rand() % PLATE_MAX;
+			temp.y = rand() % PLATE_MAX;
+		} while (plate[temp.x][temp.y] != EMPTY);
+		plate[temp.x][temp.y] = BLOCK;
 	}
 }
 
