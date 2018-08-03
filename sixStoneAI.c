@@ -735,7 +735,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 	// Make candidate proper number ( 50 );
 	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX], myCandCord[PLATE_MAX * PLATE_MAX];
 	cord2D temp;
-	char tempPlate[PLATE_MAX][PLATE_MAX], cPlate[PLATE_MAX][PLATE_MAX];
+	char tempPlate[PLATE_MAX][PLATE_MAX], mPlate[PLATE_MAX][PLATE_MAX], oPlate[PLATE_MAX][PLATE_MAX];
 	int oppoCandNum = 0;
 	int myCandNum = 0;
 	int highestWeight = 0;
@@ -749,41 +749,41 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 	next[1].x = -1;	next[1].y = -1;
 	index[0] = 0;	index[1] = 0;
 
+	// Init temp - plate.
+	changeBlocking(plate, mPlate, turn);
+	changeBlocking(plate, oPlate, oppo);
+
 	//Search in case we can win.
-	changeBlocking(plate, cPlate, turn);
-	if((loseDir = getWinState(cPlate, &temp, turn)) != NO) {
+	if((loseDir = getWinState(mPlate, &temp, turn)) != NO) {
 		printf("Winning State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
 		system("pause");
 		doWin(plate, temp, loseDir, next, turn);
 	}
-	else {
-		// Check oppo`s win state. ( 4 ~ 5 continuos state. )
-		changeBlocking(plate, cPlate, oppo);
-		if ((loseDir = getWinState(cPlate, &temp, oppo)) != NO) {
-			printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
-			system("pause");
-			doSheild(plate, temp, loseDir, next, turn);
-		}
+	else if((loseDir = getWinState(oPlate, &temp, oppo)) != NO){
+		printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
+		system("pause");
+		doSheild(plate, temp, loseDir, next, turn);
 	}
+
+	// Init temp - plate.
+	changeBlocking(plate, mPlate, turn);
+	changeBlocking(plate, oPlate, oppo);
 
 	if (next[1].x == -1 && next[0].x != -1) {
 		// Check if is there any other lose state.
-		changeBlocking(plate, cPlate, oppo);
-		if ((loseDir = getWinState(plate, &temp, oppo)) != NO) {
+		if ((loseDir = getWinState(oPlate, &temp, oppo)) != NO) {
 			printf("Losing State find at (%d, %d) with dir %d.\n", temp.x, temp.y, loseDir);
 			system("pause");
 			// In this case, next[0] will using twice.
 			doSheild(plate, temp, loseDir, next, turn);
 		}
 		else {
-			changeBlocking(plate, cPlate, oppo);
 			// Calculate opposite turn`s highest plate.
-			oppoCandNum = getCandidate(cPlate, oppoCandCord, oppo);
-			oppoWeight = getCandWeight(cPlate, oppoCandCord[oppoCandNum - 1], oppo);
+			oppoCandNum = getCandidate(oPlate, oppoCandCord, oppo);
+			oppoWeight = getCandWeight(oPlate, oppoCandCord[oppoCandNum - 1], oppo);
 
 			for (i = 0; i < oppoCandNum; i++) {
-				changeBlocking(plate, cPlate, turn);
-				memcpy(tempPlate, cPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+				memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
 				myCandNum = getCandidate(tempPlate, myCandCord, turn);
 				myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);
@@ -796,13 +796,11 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
 		// Calculate opposite turn`s highest plate.
-		changeBlocking(plate, cPlate, oppo);
-		oppoCandNum = getCandidate(plate, oppoCandCord, oppo);
-		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
+		oppoCandNum = getCandidate(oPlate, oppoCandCord, oppo);
+		oppoWeight = getCandWeight(oPlate, oppoCandCord[oppoCandNum - 1], oppo);
 
 		for(i = 0; i < oppoCandNum; i++)	{
-			changeBlocking(plate, cPlate, turn);
-			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
 			myCandNum = getCandidate(tempPlate, myCandCord, turn);
 			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
@@ -813,16 +811,18 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 		next[0].y = oppoCandCord[index[0]].y;
 	
 		put(plate, next[0], turn);
+
+		// Init temp - plate.
+		changeBlocking(plate, mPlate, turn);
+		changeBlocking(plate, oPlate, oppo);
 		highestWeight = 0;
 
-		changeBlocking(plate, cPlate, oppo);
 		// Calculate opposite turn`s highest plate.
-		oppoCandNum = getCandidate(plate, oppoCandCord, oppo);
-		oppoWeight = getCandWeight(plate, oppoCandCord[oppoCandNum - 1], oppo);
+		oppoCandNum = getCandidate(oPlate, oppoCandCord, oppo);
+		oppoWeight = getCandWeight(oPlate, oppoCandCord[oppoCandNum - 1], oppo);
 	
 		for(i = 0; i < oppoCandNum; i++)	{
-			changeBlocking(plate, cPlate, turn);
-			memcpy(tempPlate, plate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
 			myCandNum = getCandidate(tempPlate, myCandCord, turn);
 			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);	
