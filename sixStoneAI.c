@@ -527,58 +527,58 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 	// Start from plate[cord.x, cord.y], direction dir is winning state, so put nextX and nextY to finish game.
 	int i, count = 0;
 	// For processing ___OOOO_.
-	int nonTurnIndex = 0;
-	int oppo;
+	int nonTurnIndex = -1;
+	int oppo, flag = 0;
 
 	oppo = turn == BLACK ? WHITE : BLACK;
 	
 	for (i = 0; i < 8; i++) {
 		switch (dir) {
 			case EAST:
-				if (plate[temp.x][temp.y + i] != oppo && plate[temp.x][temp.y + i + 1] == oppo) {
+				if (plate[temp.x][temp.y + i] != oppo && (plate[temp.x][temp.y + i + 1] == oppo || plate[temp.x][temp.y + i + 1] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 			case WEST:
-				if (plate[temp.x][temp.y - i] != oppo && plate[temp.x][temp.y - i - 1] == oppo) {
+				if (plate[temp.x][temp.y - i] != oppo && (plate[temp.x][temp.y - i - 1] == oppo || plate[temp.x][temp.y - i - 1] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 			case SOUTH:
-				if (plate[temp.x + i][temp.y] != oppo && plate[temp.x + i + 1][temp.y] == oppo) {
+				if (plate[temp.x + i][temp.y] != oppo && (plate[temp.x + i + 1][temp.y] == oppo || plate[temp.x + i + 1][temp.y] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 			case NORTH:
-				if (plate[temp.x - i][temp.y] != oppo && plate[temp.x - i - 1][temp.y] == oppo) {
+				if (plate[temp.x - i][temp.y] != oppo && (plate[temp.x - i - 1][temp.y] == oppo || plate[temp.x - i - 1][temp.y] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 
 			case EAST_SOUTH:
-				if (plate[temp.x + i][temp.y + i] != oppo && plate[temp.x + i + 1][temp.y + i + 1] == oppo) {
+				if (plate[temp.x + i][temp.y + i] != oppo && (plate[temp.x + i + 1][temp.y + i + 1] == oppo || plate[temp.x + i + 1][temp.y + i + 1] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 			case EAST_NORTH:
-				if (plate[temp.x - i][temp.y + i] != oppo && plate[temp.x - i - 1][temp.y + i + 1] == oppo) {
+				if (plate[temp.x - i][temp.y + i] != oppo && (plate[temp.x - i - 1][temp.y + i + 1] == oppo || plate[temp.x - i - 1][temp.y + i + 1] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 			case WEST_SOUTH:
-				if (plate[temp.x + i][temp.y - i] != oppo && plate[temp.x + i + 1][temp.y - i - 1] == oppo) {
+				if (plate[temp.x + i][temp.y - i] != oppo && (plate[temp.x + i + 1][temp.y - i - 1] == oppo || plate[temp.x + i + 1][temp.y - i - 1] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
 				break;
 			case WEST_NORTH:
-				if (plate[temp.x - i][temp.y - i] != oppo && plate[temp.x - i - 1][temp.y - i - 1] == oppo) {
+				if (plate[temp.x - i][temp.y - i] != oppo && (plate[temp.x - i - 1][temp.y - i - 1] == oppo || plate[temp.x - i - 1][temp.y - i - 1] == BLOCK)) {
 					nonTurnIndex = i;
 					break;
 				}
@@ -586,7 +586,14 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			default:
 				break;
 		}
+		if (nonTurnIndex != -1) break;
 	}
+
+	// For start from -1 state.
+	if (temp.x == -1 || temp.y == -1) {
+		if (nonTurnIndex == 0) nonTurnIndex = 1;
+	}
+
 	switch (dir) {
 	case EAST:
 		if (plate[temp.x][temp.y + nonTurnIndex] == EMPTY) {
