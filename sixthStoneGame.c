@@ -20,10 +20,13 @@ int main()	{
 	do {
 		changeTurn(&turn);
 		display(plate, lenCord);
+		system("pause");
 		if(turn == WHITE)	{
 			sixthStoneBot(plate, nextPut, before, turn);
 		}
 		else {
+			sixthStoneBot(plate, nextPut, before, turn);
+			/*
 			for(i = 0; i < 2; i++)	{
 				scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
 				while(canPut(plate, nextPut[i], turn) == NO)	{
@@ -35,6 +38,7 @@ int main()	{
 				put(plate, nextPut[i], turn);
 				display(plate, lenCord);
 			}
+			*/
 		}
 	}	while(whoWin(plate, nextPut, turn) == NO);
 	display(plate, lenCord);
