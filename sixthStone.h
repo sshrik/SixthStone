@@ -34,17 +34,17 @@ typedef struct{
 	int y;
 } cord2D;
 
-void display(char plate[][PLATE_MAX], cord2D lenCord);
-int whoWin(char plate[][PLATE_MAX], cord2D lenCord, cord2D* cord, int turn);
+void display(char plate[][PLATE_MAX]);
+int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn);
 void put(char plate[][PLATE_MAX], cord2D cord, int what);
-int canPut(char plate[][PLATE_MAX], cord2D lenCord, cord2D cord, int what);
+int canPut(char plate[][PLATE_MAX], cord2D cord, int what);
 void changeTurn(int * turn);
 int getStateDir(char* state, char plate[][PLATE_MAX], int stateLen, int dir, int stateValue);
 int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, int dir);
 //int getStrDir(char* str, char plate[][PLATE_MAX], cord2D cord, int stateLen, int dir);
 void initPlate(char plate[][PLATE_MAX], int blockNum);
 
-int getCandidate(char plate[][PLATE_MAX], cord2D lenCord, cord2D *candCord, int turn);
+int getCandidate(char plate[][PLATE_MAX], cord2D *candCord, int turn);
 int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn);
 int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
 int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum);
@@ -52,7 +52,7 @@ int isOutOfPlate(cord2D cord, int next, int dir);
 int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
 void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int turn);
 void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn);
-void sixthStoneBot(char plate[][PLATE_MAX], cord2D lenCord, cord2D *next, cord2D *before, int turn);
+void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int turn);
 void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn);
 
 #endif

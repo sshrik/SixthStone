@@ -1,7 +1,6 @@
 #include "sixthStone.h"
-// TODO : change lenX, lenY to cord2D lenCord and x, y to cord2D cord.
 
-void display(char plate[][PLATE_MAX], cord2D lenCord)	{
+void display(char plate[][PLATE_MAX])	{
 	// Clear monitor and Display plate with x - y number.
 	// int i, j;
 
@@ -21,18 +20,18 @@ void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 	printf("*\t");
 	printf("%c[0m",27);
 
-	for(j = 0; j < lenCord.y; j++) {
+	for(j = 0; j < PLATE_MAX; j++) {
 		printf("%c[1;%dm", 27, 37);
 		printf("%d\t", j);
 		printf("%c[0m",27); 
 	}
 	printf("\n");
 
-	for (i = 0; i < lenCord.x; i++) {
+	for (i = 0; i < PLATE_MAX; i++) {
 		printf("%c[1;%dm", 27, 37);
 		printf("%d\t", i);
 		printf("%c[0m", 27);
-		for (j = 0; j < lenCord.y; j++) {
+		for (j = 0; j < PLATE_MAX; j++) {
 			switch (plate[i][j]) {
 			case BLACK:
 				printf("%c[1;%dm", 27, 34);
@@ -63,19 +62,19 @@ void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 
 	turn = WHITE;
 
-	for (i = 0; i < lenCord.x; i++) {
-		for (j = 0; j < lenCord.y; j++) {
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
 			temp.x = i;
 			temp.y = j;
-			if (canPut(plate, lenCord, temp, turn) == YES) {
+			if (canPut(plate, temp, turn) == YES) {
 				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
 				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
 			}
 		}
 	}
 
-	for (i = 0; i < lenCord.x; i++) {
-		for (j = 0; j < lenCord.y; j++) {
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
 			if (candidateWeight[i][j] == maxWeight) {
 				candCord[candidateNum].x = i;
 				candCord[candidateNum].y = j;
@@ -83,83 +82,9 @@ void display(char plate[][PLATE_MAX], cord2D lenCord)	{
 			}
 		}
 	}
-	/* // For Test weight.
-	printf("\n");
-	printf("\n");
-
-	printf("%c[1;%dm", 27, 37);
-	printf("*\t");
-	printf("%c[0m", 27);
-
-	for (j = 0; j < lenCord.y; j++) {
-		printf("%c[1;%dm", 27, 37);
-		printf("%d\t", j);
-		printf("%c[0m", 27);
-	}
-	printf("\n");
-
-	for (i = 0; i < PLATE_MAX; i++) {
-		printf("%c[1;%dm", 27, 37);
-		printf("%d\t", i);
-		printf("%c[0m", 27);
-		for (j = 0; j < PLATE_MAX; j++) {
-			printf("%d\t", candidateWeight[i][j]);
-		}
-		printf("\n");
-	}
-
-
-	turn = BLACK;
-
-	for (i = 0; i < lenCord.x; i++) {
-		for (j = 0; j < lenCord.y; j++) {
-			temp.x = i;
-			temp.y = j;
-			if (canPut(plate, lenCord, temp, turn) == YES) {
-				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
-				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
-			}
-		}
-	}
-
-	for (i = 0; i < lenCord.x; i++) {
-		for (j = 0; j < lenCord.y; j++) {
-			if (candidateWeight[i][j] == maxWeight) {
-				candCord[candidateNum].x = i;
-				candCord[candidateNum].y = j;
-				candidateNum++;
-			}
-		}
-	}
-
-
-	printf("\n");
-	printf("\n");
-
-	printf("%c[1;%dm", 27, 37);
-	printf("*\t");
-	printf("%c[0m", 27);
-
-	for (j = 0; j < lenCord.y; j++) {
-		printf("%c[1;%dm", 27, 37);
-		printf("%d\t", j);
-		printf("%c[0m", 27);
-	}
-	printf("\n");
-
-	for (i = 0; i < PLATE_MAX; i++) {
-		printf("%c[1;%dm", 27, 37);
-		printf("%d\t", i);
-		printf("%c[0m", 27);
-		for (j = 0; j < PLATE_MAX; j++) {
-			printf("%d\t", candidateWeight[i][j]);
-		}
-		printf("\n");
-	}
-	*/
 }
 
-int whoWin(char plate[][PLATE_MAX], cord2D lenCord, cord2D* cord, int turn)	{
+int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn)	{
 	// TODO : Need to add 7-stones to loose.
 	char what = turn;
 	int c, i;
@@ -238,7 +163,7 @@ void put(char plate[][PLATE_MAX], cord2D cord, int what)	{
 	plate[cord.x][cord.y] = what;
 }
 
-int canPut(char plate[][PLATE_MAX], cord2D lenCord, cord2D cord, int what)	{
+int canPut(char plate[][PLATE_MAX], cord2D cord, int what)	{
 	if(isOutOfPlate(cord, 0, 1))	return NO;
 	else if(plate[cord.x][cord.y] != EMPTY)	{
 		// If plate[x][y] is filled with other stone,
