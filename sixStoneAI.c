@@ -3,10 +3,9 @@
 void setCandidate(char plate[][PLATE_MAX], cord2D *cord, int turn)	{
 	// Check where can turn`th player put stone.
 	int candidateWeight[PLATE_MAX][PLATE_MAX] = {{0,}};
-	int i, j, candidateNum = 0;
+	int i, candidateNum = 0;
 	int maxWeight = -1;
 	int dir;
-	cord2D temp;
 
 	for (i = 0; i < 4; i++) {
 		if (i < 2) {
@@ -176,16 +175,263 @@ int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn)	{
 int getWinState(char plate[][PLATE_MAX], cord2D cord, int turn)	{
 	// Find is plate have win state. If exist, return dir. Else, return "NO";
 	int i, j, k, dir = NO;
+	cord2D temp;
 
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
+			for (k = 1; k <= 8; k++) {
+				temp.x = i;	temp.y = j;
+				if (isWinState(plate, cord, turn, k, 4) == YES || isWinState(plate, cord, turn, k, 5) == YES) {
+					memcpy(&cord, &temp, sizeof(cord2D));
+					return k;
+				}
+			}
+		}
+	}
+
+	/*
+	// TODO: Need to check 8 / 7 stone including last doing stone location.
 	for (int i = 0; i < MEMORIZED_SIZE / 2; i++) {
 		for (k = 1; k <= 8; k++) {
 			if (isWinState(plate, cord, turn, k, 4) == YES || isWinState(plate, cord, turn, k, 5) == YES) {
 				return k;
 			}
 		}
-
 	}
+	*/
 	return dir;
+}
+
+int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum) {
+	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
+	int i, count = 0;
+	if (!isOutOfPlate(cord, 8, dir)) {
+		switch (dir) {
+		case EAST:	// Y++
+			if (plate[cord.x][cord.y + 7] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x][cord.y + i] == turn) count++;
+					else if (plate[cord.x][cord.y + i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case WEST:	// Y--
+			if (plate[cord.x][cord.y - 7] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x][cord.y - i] == turn) count++;
+					else if (plate[cord.x][cord.y - i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case SOUTH:	// X++
+			if (plate[cord.x + 7][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x + i][cord.y] == turn) count++;
+					else if (plate[cord.x + i][cord.y] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case NORTH:	// X--
+			if (plate[cord.x - 7][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x - i][cord.y] == turn) count++;
+					else if (plate[cord.x - i][cord.y] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+
+		case EAST_SOUTH:	// X++ Y++
+			if (plate[cord.x + 7][cord.y + 7] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x + i][cord.y + i] == turn) count++;
+					else if (plate[cord.x + i][cord.y + i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case EAST_NORTH:	// X-- Y++
+			if (plate[cord.x - 7][cord.y + 7] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x - i][cord.y + i] == turn) count++;
+					else if (plate[cord.x - i][cord.y + i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case WEST_SOUTH:	// X++ Y--
+			if (plate[cord.x + 7][cord.y - 7] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x + i][cord.y - i] == turn) count++;
+					else if (plate[cord.x + i][cord.y - i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case WEST_NORTH:	// X-- Y--
+			if (plate[cord.x - 7][cord.y - 7] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x - i][cord.y - i] == turn) count++;
+					else if (plate[cord.x - i][cord.y - i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		default:
+			break;
+		}
+		return NO;
+	}
+	else if (!isOutOfPlate(cord, 7, dir)) {
+		switch (dir) {
+		case EAST:	// Y++
+			if (plate[cord.x][cord.y + 6] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x][cord.y + i] == turn) count++;
+					else if (plate[cord.x][cord.y + i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case WEST:	// Y--
+			if (plate[cord.x][cord.y - 6] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x][cord.y - i] == turn) count++;
+					else if (plate[cord.x][cord.y - i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case SOUTH:	// X++
+			if (plate[cord.x + 6][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x + i][cord.y] == turn) count++;
+					else if (plate[cord.x + i][cord.y] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case NORTH:	// X--
+			if (plate[cord.x - 6][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x - i][cord.y] == turn) count++;
+					else if (plate[cord.x - i][cord.y] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+
+		case EAST_SOUTH:	// Y++ X++
+			if (plate[cord.x + 6][cord.y + 6] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x + i][cord.y + i] == turn) count++;
+					else if (plate[cord.x + i][cord.y + i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case EAST_NORTH:	// Y++ X--
+			if (plate[cord.x - 6][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x - i][cord.y] == turn) count++;
+					else if (plate[cord.x - i][cord.y] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case WEST_SOUTH:	// Y-- X++
+			if (plate[cord.x + 6][cord.y - 6] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x + i][cord.y - i] == turn) count++;
+					else if (plate[cord.x + i][cord.y - i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		case WEST_NORTH:	//Y-- X--
+			if (plate[cord.x - 6][cord.y - 6] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 0; i < 6; i++) {
+					if (plate[cord.x - i][cord.y - i] == turn) count++;
+					else if (plate[cord.x - i][cord.y - i] != EMPTY) {
+						count = 0;
+						break;
+					}
+				}
+				return count == continum ? YES : NO;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		return NO;
+	}
+	return NO;
 }
 
 int getHighestWeightDirection(char plate[][PLATE_MAX], cord2D cord, int turn) {
@@ -221,6 +467,7 @@ int getHighestWeightDirection(char plate[][PLATE_MAX], cord2D cord, int turn) {
 
 	return result;
 }
+
 int getHighestWeight(char plate[][PLATE_MAX], cord2D cord, int turn) {
 	int k;
 	int maxWeight = 0;
@@ -250,122 +497,6 @@ int getHighestWeight(char plate[][PLATE_MAX], cord2D cord, int turn) {
 	}
 
 	return maxWeight;
-}
-int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum) {
-	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
-	int i, count = 0;
-	// need to see 6 space, not 8...TT 
-	if (isOutOfPlate(cord, 8, dir))	return NO;
-	switch (dir) {
-	case EAST:	// Y++
-		if (plate[cord.x][cord.y + 7] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x][cord.y + i] == turn) count++;
-				else if (plate[cord.x][cord.y + i] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	case WEST:	// Y--
-		if (plate[cord.x][cord.y - 7] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x][cord.y - i] == turn) count++;
-				else if (plate[cord.x][cord.y - i] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	case SOUTH:	// X++
-		if (plate[cord.x + 7][cord.y] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x + i][cord.y] == turn) count++;
-				else if (plate[cord.x + i][cord.y] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	case NORTH:	// X--
-		if (plate[cord.x - 7][cord.y] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x - i][cord.y] == turn) count++;
-				else if (plate[cord.x - i][cord.y] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-
-	case EAST_SOUTH:	// X++ Y++
-		if (plate[cord.x + 7][cord.y + 7] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x + i][cord.y + i] == turn) count++;
-				else if (plate[cord.x + i][cord.y + i] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	case EAST_NORTH:	// X-- Y++
-		if (plate[cord.x - 7][cord.y + 7] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x - i][cord.y + i] == turn) count++;
-				else if (plate[cord.x - i][cord.y + i] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	case WEST_SOUTH:	// X++ Y--
-		if (plate[cord.x + 7][cord.y - 7] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x + i][cord.y - i] == turn) count++;
-				else if (plate[cord.x + i][cord.y - i] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	case WEST_NORTH:	// X-- Y--
-		if (plate[cord.x - 7][cord.y - 7] != turn) {
-			// if 4 or 5 turn`th stone exist, return true.
-			for (i = 1; i <= 6; i++) {
-				if (plate[cord.x - i][cord.y - i] == turn) count++;
-				else if (plate[cord.x - i][cord.y - i] != EMPTY) {
-					count = 0;
-					break;
-				}
-			}
-			return count == continum ? YES : NO;
-		}
-		break;
-	default:
-		break;
-	}
-	return NO;
 }
 
 int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir)	{
@@ -708,47 +839,80 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D *next, int t
 	}
 }
 
-void sixStoneBot(char plate[][PLATE_MAX], cord2D lenCord, memorizedCord2D *memorizedCord, int turn) {
+void sixStoneBot(char plate[][PLATE_MAX], memorizedCord2D *memorizedCord, int turn) {
 	// Main AI. Return at next[2].
 	// Make candidate proper number ( 50 );
+	// memorizedCord mine = my stone location. oppo = other`s stone location.
 	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX], myCandCord[PLATE_MAX * PLATE_MAX];
-	cord2D cord;
-	char tempPlate[PLATE_MAX][PLATE_MAX], cPlate[PLATE_MAX][PLATE_MAX];
+	cord2D cord = { 0, 0 };
+	char tempPlate[PLATE_MAX][PLATE_MAX], mPlate[PLATE_MAX][PLATE_MAX], oPlate[PLATE_MAX][PLATE_MAX];
 	int oppoCandNum = 0;
 	int myCandNum = 0;
 	int highestWeight = 0, weight = 0, highestMem = 0;
 	int i, oppo, oppoWeight, myWeight, index[2], loseDir, count = 0;
 
 	// turn mean my color, oppo mean other`s color.
-	if (turn == BLACK) oppo = WHITE;
-	else oppo = BLACK;
+	oppo = turn == BLACK ? WHITE : BLACK;
 
 	index[0] = 0;	index[1] = 0;
 	
 	// Change "C" into turn`s stone.
-	changeBlocking(plate, cPlate, turn);
+	// mPlate mean myPlate.
+	changeBlocking(plate, mPlate, turn); 
 
+	// oPlate mean oppoPlate
+	changeBlocking(plate, oPlate, oppo);
+	
+	memset(memorizedCord->mine, -1, sizeof(cord2D) * 2);
+	if ((loseDir = getWinState(mPlate, cord, turn)) != NO)	{
+		// In case AI can win.
+		printf("Winning State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
+		system("pause");
+		doWin(plate, cord, loseDir, memorizedCord->mine, turn);
+	}
+	else if ((loseDir = getWinState(oPlate, cord, oppo)) != NO) {
+		// In case AI can lose.
+		printf("Winning State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
+		system("pause");
+		doSheild(plate, cord, loseDir, memorizedCord->mine, turn);
+	}
+
+	// Judge what have to do next.
+	if (memorizedCord->mine[0].x == -1 && memorizedCord->mine[1].x == -1) {
+		// if 2 cordinate is empty,
+
+	}
+	else if ((memorizedCord->mine[0].x != -1 && memorizedCord->mine[1].x == -1) || (memorizedCord->mine[0].x == -1 && memorizedCord->mine[1].x != -1)) {
+		// if 1 cordinate is empty,
+	}
+	else {
+		// if cordinate is not empty,
+		// Do nothing.
+	}
+	
+	
+	/*
 	//Search in case we can win.
 	for (i = 0; i < 2; i++) {
 		highestMem = -1;
 		highestWeight = 0;
+
 		for (int mem = 0; mem < MEMORIZED_SIZE; mem++) {
 			cord = mem < 2 ? memorizedCord->mine[mem] : memorizedCord->opposite[mem - 2];
 			if (cord.x == -1 || cord.y == -1) {
-				//temporary code
+				// Set mine to opposite. ( AI`s turn start. )
 				memorizedCord->mine[i].x = memorizedCord->opposite[i].x + 1;
 				memorizedCord->mine[i].y = memorizedCord->opposite[i].y + 1;
 			}
 			// Find win state -> Find lose state -> Find next stone location.
-			if ((loseDir = getWinState(cPlate, cord, turn)) != NO) {
+			if ((loseDir = getWinState(mPlate, cord, turn)) != NO) {
 				printf("Winning State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
 				system("pause");
 				doWin(plate, cord, loseDir, &memorizedCord->mine[i], turn);
 			}
 			else {
 				// Check oppo`s win state. ( 4 ~ 5 continuos state. )
-				changeBlocking(plate, cPlate, oppo);
-				if ((loseDir = getWinState(cPlate, cord, oppo)) != NO) {
+				if ((loseDir = getWinState(oPlate, cord, oppo)) != NO) {
 					printf("Losing State was found at (%d, %d) with dir %d.\n", cord.x, cord.y, loseDir);
 					system("pause");
 					doSheild(plate, cord, loseDir, &memorizedCord->mine[i], turn);
@@ -756,12 +920,10 @@ void sixStoneBot(char plate[][PLATE_MAX], cord2D lenCord, memorizedCord2D *memor
 				}
 				else {
 					if (mem < 2) {
-						changeBlocking(plate, cPlate, turn);
-						weight = getHighestWeight(plate, cord, turn);
+						weight = getHighestWeight(mPlate, cord, turn);
 					}
 					else {
-						changeBlocking(plate, cPlate, oppo);
-						weight = getHighestWeight(plate, cord, oppo);
+						weight = getHighestWeight(oPlate, cord, oppo);
 					}
 					if (highestWeight < weight) {
 						highestWeight = weight;
@@ -775,36 +937,37 @@ void sixStoneBot(char plate[][PLATE_MAX], cord2D lenCord, memorizedCord2D *memor
 			put(plate, memorizedCord->mine[i], turn);
 			break;
 		case 0:
-			setCandidate(cPlate, &memorizedCord->mine[i], turn);
+			setCandidate(mPlate, &memorizedCord->mine[i], turn);
 			put(plate, memorizedCord->mine[i], turn);
 			break;
 		case 1:
-			setCandidate(cPlate, &memorizedCord->mine[i], turn);
+			setCandidate(mPlate, &memorizedCord->mine[i], turn);
 			put(plate, memorizedCord->mine[i], turn);
 			break;
 		case 2:
 			cord = memorizedCord->opposite[i];
-			setCandidate(cPlate, &cord, oppo);
-			memorizedCord->mine[i] = cord;
+			setCandidate(mPlate, &cord, oppo);
+			memcpy(&memorizedCord->mine[i], &cord, sizeof(cord2D));
 			put(plate, memorizedCord->mine[i], turn);
 			break;
 		case 3:
 			cord = memorizedCord->opposite[i];
-			setCandidate(cPlate, &cord, oppo);
-			memorizedCord->mine[i] = cord;
+			setCandidate(mPlate, &cord, oppo);
+			memcpy(&memorizedCord->mine[i], &cord, sizeof(cord2D));
 			put(plate, memorizedCord->mine[i], turn);
 			break;
-			/* TODO : check this plz
-			for (i = 0; i < oppoCandNum; i++) {
-			changeBlocking(plate, cPlate, turn);
-			memcpy(tempPlate, cPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
-			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-			myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
-			myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);
-			if (myWeight > highestWeight) index[1] = i;
-			}
-			*/
+			// TODO : check this plz
+			// for (i = 0; i < oppoCandNum; i++) {
+			// changeBlocking(plate, cPlate, turn);
+			// memcpy(tempPlate, cPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			// tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			// myCandNum = getCandidate(tempPlate, lenCord, myCandCord, turn);
+			// myWeight = getCandWeight(tempPlate, oppoCandCord[oppoCandNum - 1], turn);
+			//	if (myWeight > highestWeight) index[1] = i;
+			// }
+			
 
 		}
 	}
+	*/
 }

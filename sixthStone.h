@@ -42,10 +42,10 @@ typedef struct {
 } memorizedCord2D;
 
 void display(char plate[][PLATE_MAX]);
-int whoWin(char plate[][PLATE_MAX], cord2D lenCord, cord2D* cord, int turn);
+int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn);
 void put(char plate[][PLATE_MAX], cord2D cord, int what);
 int canPut(char plate[][PLATE_MAX], cord2D cord, int what);
-int changeTurn(int turn, memorizedCord2D *memorizedCord);
+void changeTurn(int* turn, memorizedCord2D *memorizedCord);
 int getStateDir(char* state, char plate[][PLATE_MAX], int stateLen, int dir, int stateValue);
 int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, int dir);
 //int getStrDir(char* str, char plate[][PLATE_MAX], cord2D cord, int stateLen, int dir);
@@ -59,7 +59,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int cont
 int isOutOfPlate(cord2D cord, int next, int dir);
 int getState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir);
 void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D* cord, int turn);
-void sixStoneBot(char plate[][PLATE_MAX], cord2D lenCord, memorizedCord2D *memorizedCord, int turn);
+void sixStoneBot(char plate[][PLATE_MAX], memorizedCord2D *memorizedCord, int turn);
 void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn);
 void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn);
 
