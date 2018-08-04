@@ -1,8 +1,6 @@
 #include "sixthStone.h"
 
-int weightList[5] = {1, 3, 6, 50, 200};
-
-int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, int turn)	{
+int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, int * weightList, int turn)	{
 	// Check where can turn`th player put stone.
 	int i, j, dir, candidateNum = 0;
 	int maxWeight = -1;
@@ -33,19 +31,19 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 					}
 
 					if (isWinState(plate, temp, BLACK, dir, 5) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[4]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[9]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 4) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[3]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[8]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 3) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[2]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[7]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 2) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[1]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[6]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 1) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[0]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[5]);
 					}
 				}
 				else {
@@ -66,19 +64,19 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 					}
 
 					if (isWinState(plate, temp, WHITE, dir, 5) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[4]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[9]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 4) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[3]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[8]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 3) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[2]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[7]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 2) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[1]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[6]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 1) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[0]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[5]);
 					}
 				}
 			}
@@ -809,7 +807,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 	if (next[1].x != -1)	put(plate, next[1], turn);
 }
 
-void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int turn)	{
+void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn)	{
 	// Main AI. Return at next[2].
 	// Make candidate proper number ( 50 );
 	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX], myCandCord[PLATE_MAX * PLATE_MAX];
@@ -832,6 +830,27 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 	// Init temp - plate.
 	changeBlocking(plate, mPlate, turn);
 	changeBlocking(plate, oPlate, oppo);
+
+	if (doNext == 1) {
+		// Do only 1.
+		// Calculate opposite turn`s highest plate.
+		oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, weightList, oppo);
+		oppoWeight = candidateWeight[oppoCandCord[oppoCandNum - 1].x][oppoCandCord[oppoCandNum - 1].y];
+
+		for (i = 0; i < oppoCandNum; i++) {
+			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, weightList, turn);
+			myWeight = candidateWeight[myCandCord[myCandNum - 1].x][myCandCord[myCandNum - 1].y];
+			if (myWeight > highestWeight) index[0] = i;
+		}
+
+		next[0].x = oppoCandCord[index[0]].x;
+		next[0].y = oppoCandCord[index[0]].y;
+
+		put(plate, next[0], turn);
+		return 0;
+	}
 
 	//Search in case we can win.
 	if((loseDir = getWinState(mPlate, &temp, turn)) != NO) {
@@ -859,13 +878,13 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 		}
 		else {
 			// Calculate opposite turn`s highest plate.
-			oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, oppo);
+			oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, weightList, oppo);
 			oppoWeight = candidateWeight[oppoCandCord[oppoCandNum - 1].x][oppoCandCord[oppoCandNum - 1].y];
 
 			for (i = 0; i < oppoCandNum; i++) {
 				memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-				myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, turn);
+				myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, weightList, turn);
 				myWeight = candidateWeight[myCandCord[myCandNum - 1].x][myCandCord[myCandNum - 1].y];
 				if (myWeight > highestWeight) index[1] = i;
 			}
@@ -876,13 +895,13 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
 		// Calculate opposite turn`s highest plate.
-		oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, oppo);
+		oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, weightList, oppo);
 		oppoWeight = candidateWeight[oppoCandCord[oppoCandNum - 1].x][oppoCandCord[oppoCandNum - 1].y];
 
 		for(i = 0; i < oppoCandNum; i++)	{
 			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, turn);
+			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, weightList, turn);
 			myWeight = candidateWeight[myCandCord[myCandNum - 1].x][myCandCord[myCandNum - 1].y];
 			if(myWeight > highestWeight) index[0] = i;
 		}
@@ -898,13 +917,13 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int tu
 		highestWeight = 0;
 
 		// Calculate opposite turn`s highest plate.
-		oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, oppo);
+		oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, weightList, oppo);
 		oppoWeight = candidateWeight[oppoCandCord[oppoCandNum - 1].x][oppoCandCord[oppoCandNum - 1].y];
 	
 		for(i = 0; i < oppoCandNum; i++)	{
 			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, turn);
+			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, weightList, turn);
 			myWeight = candidateWeight[myCandCord[myCandNum - 1].x][myCandCord[myCandNum - 1].y];
 			if(myWeight > highestWeight) index[1] = i;
 		}	

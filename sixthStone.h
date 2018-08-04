@@ -41,7 +41,7 @@ int canPut(char plate[][PLATE_MAX], cord2D cord, int what);
 void changeTurn(int * turn);
 void initPlate(char plate[][PLATE_MAX], int blockNum);
 
-int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, int turn);
+int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, int * weightList, int turn);
 int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn);
 void addWeight(char plate[][PLATE_MAX], cord2D temp, int cordWeight[][PLATE_MAX], int dir, int addNum);
 int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
@@ -49,7 +49,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int cont
 int isOutOfPlate(cord2D cord, int next, int dir);
 void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int turn);
 void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn);
-void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int turn);
+void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn);
 void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn);
 
 #endif
