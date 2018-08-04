@@ -7,7 +7,7 @@ void display(char plate[][PLATE_MAX])	{
 	int candidateWeight[PLATE_MAX][PLATE_MAX] = { { 0, } };
 	int i, j, candidateNum = 0;
 	int maxWeight = -1;
-	int turn;
+	int turn, tPlate[PLATE_MAX][PLATE_MAX];
 	cord2D temp;
 	cord2D candCord[PLATE_MAX * PLATE_MAX];
 
@@ -59,29 +59,102 @@ void display(char plate[][PLATE_MAX])	{
 		}
 		printf("\n");
 	}
-
+	/*
 	turn = WHITE;
 
-	for (i = 0; i < PLATE_MAX; i++) {
-		for (j = 0; j < PLATE_MAX; j++) {
-			temp.x = i;
-			temp.y = j;
-			if (canPut(plate, temp, turn) == YES) {
-				candidateWeight[i][j] = getCandWeight(plate, temp, turn);
-				maxWeight = (maxWeight > candidateWeight[i][j] ? maxWeight : candidateWeight[i][j]);
-			}
-		}
+	changeBlocking(plate, tPlate, turn);
+	candidateNum = getCandidate(tPlate, candidateWeight, candCord, turn);
+	printf("%c[1;%dm", 27, 37);
+	printf("*\t");
+	printf("%c[0m", 27);
+
+	for (j = 0; j < PLATE_MAX; j++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", j);
+		printf("%c[0m", 27);
 	}
+	printf("\n");
 
 	for (i = 0; i < PLATE_MAX; i++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", i);
+		printf("%c[0m", 27); 
 		for (j = 0; j < PLATE_MAX; j++) {
-			if (candidateWeight[i][j] == maxWeight) {
-				candCord[candidateNum].x = i;
-				candCord[candidateNum].y = j;
-				candidateNum++;
+			switch (plate[i][j]) {
+			case BLACK:
+				printf("%c[1;%dm", 27, 34);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			case WHITE:
+				printf("%c[1;%dm", 27, 37);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			case EMPTY:
+				printf("%c[1;%dm", 27, 30);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			case BLOCK:
+				printf("%c[1;%dm", 27, 36);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			default:
+				break;
 			}
 		}
+		printf("\n");
 	}
+
+	turn = BLACK;
+
+	changeBlocking(plate, tPlate, turn);
+	candidateNum = getCandidate(tPlate, candidateWeight, candCord, turn);
+	printf("%c[1;%dm", 27, 37);
+	printf("*\t");
+	printf("%c[0m", 27);
+
+	for (j = 0; j < PLATE_MAX; j++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", j);
+		printf("%c[0m", 27);
+	}
+	printf("\n");
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		printf("%c[1;%dm", 27, 37);
+		printf("%d\t", i);
+		printf("%c[0m", 27);
+		for (j = 0; j < PLATE_MAX; j++) {
+			switch (plate[i][j]) {
+			case BLACK:
+				printf("%c[1;%dm", 27, 34);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			case WHITE:
+				printf("%c[1;%dm", 27, 37);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			case EMPTY:
+				printf("%c[1;%dm", 27, 30);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			case BLOCK:
+				printf("%c[1;%dm", 27, 36);
+				printf("%d\t", candidateWeight[i][j]);
+				printf("%c[0m", 27);
+				break;
+			default:
+				break;
+			}
+		}
+		printf("\n");
+	}*/
 }
 
 int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn)	{
@@ -175,107 +248,6 @@ int canPut(char plate[][PLATE_MAX], cord2D cord, int what)	{
 void changeTurn(int * turn)	{
 	if(*turn == BLACK) *turn = WHITE;
 	else *turn = BLACK;	
-}
-
-int getStateDir(char* state, char plate[][PLATE_MAX], int stateLen, int dir, int stateValue)	{
-	char * str = (char *)malloc(sizeof(char) * stateLen);
-	int i, j, addAll = 0;
-
-	for(i = 0; i < PLATE_MAX; i++)	{
-		for(j = 0; j < PLATE_MAX; j++)	{
-			if(getStrDir(str, plate, i, j, stateLen, dir) > 0)	{
-				if(strncmp(str, state, stateLen) == 0)	{
-					addAll += stateValue;
-				}
-			}
-			memset(str, 0x00, stateLen);
-		}
-	}
-	free(str);
-	return addAll;
-}
-
-int getStrDir(char* str, char plate[][PLATE_MAX], int x, int y, int stateLen, int dir)	{
-	int i, j;
-	switch(dir)	{
-		case SOUTH:	// X ++
-			if(x + stateLen - 1 >= PLATE_MAX) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x + i][y];
-				}
-				return 1;
-			}
-			break;
-		case NORTH:	// X --
-			if(x - stateLen + 1 < 0 ) return -1;
-			else {
-				// Copy in reverse order... [W][W][C][B][E] ... -> this change to "EBCWW".
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x - i][y];
-				}
-				return 1;
-			}
-			break;
-		case EAST:	// Y ++
-			if(y + stateLen - 1 >= PLATE_MAX) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x][y + i];
-				}
-				return 1;
-			}
-			break;
-		case WEST:	// Y --
-			if(y - stateLen + 1 < 0 ) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x][y - i];
-				}
-				return 1;
-			}
-			break;
-
-		case EAST_SOUTH:	// X ++ Y ++
-			if(x + stateLen - 1 >= PLATE_MAX || y + stateLen - 1 >= PLATE_MAX) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x + i][y + i];
-				}
-				return 1;
-			}
-			break;
-		case WEST_SOUTH:	// X ++ Y --
-			if(x + stateLen - 1 >= PLATE_MAX || y - stateLen + 1 < 0) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x + i][y - i];
-				}
-				return 1;
-			}
-			break;
-		case EAST_NORTH:	// X -- Y ++
-			if(x - stateLen + 1 < 0 || y + stateLen - 1 >= PLATE_MAX) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x - i][y + i];
-				}
-				return 1;
-			}
-			break;
-		case WEST_NORTH:	// X -- Y --
-			if(x - stateLen + 1 < 0 || y + stateLen - 1 < 0) return -1;
-			else {
-				for(i = 0; i < stateLen; i++)	{
-					str[i] = plate[x - i][y - i];
-				}
-				return 1;
-			}
-			break;
-		default:
-			break;
-	}
-	return -1;
 }
 
 void initPlate(char plate[][PLATE_MAX], int blockNum)	{
