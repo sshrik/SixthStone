@@ -1074,7 +1074,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			break;
 		case WEST_SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
+				next[count].x = temp.x + nonTurnIndex;
 				next[count].y = temp.y - nonTurnIndex;
 				count++;
 			}
