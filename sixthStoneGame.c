@@ -1,6 +1,6 @@
 #include "sixthStone.h"
 
-int main()	{
+int consoleMain()	{
 	char plate[PLATE_MAX][PLATE_MAX];
 	int turn = WHITE;
 	int i, blockNum;
