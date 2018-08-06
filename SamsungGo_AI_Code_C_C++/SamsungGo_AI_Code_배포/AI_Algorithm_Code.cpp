@@ -49,7 +49,7 @@ void myturn(int cnt) {
 	int x[2], y[2];
 	int i, j;
 	char plate[PLATE_MAX][PLATE_MAX];
-	cord2D* next;
+	cord2D next[2];
 	int weightListB[10] = { 1, 3, 6, 200, 300, 1, 3, 6, 10, 15 };
 
 	// make plate
@@ -73,11 +73,11 @@ void myturn(int cnt) {
 		}
 	}
 
-	// next 
-	next = (cord2D*)malloc(sizeof(cord2D)*cnt);
+	writeLog("내 차례입니다.");
 
 	// calculate
 	sixthStoneBot(plate, next, NULL, cnt, weightListB, BLACK);
+	writeLog("어디에 놓을지 찾았습니다.");
 
 	// translate cord2D to array of x,y
 	for (i = 0; i < cnt; i++){
@@ -963,11 +963,9 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 
 	//Search in case we can win.
 	if ((loseDir = getWinState(mPlate, &temp, turn)) != NO) {
-		printf("Winning State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
 		doWin(plate, temp, loseDir, next, turn);
 	}
 	else if ((loseDir = getWinState(oPlate, &temp, oppo)) != NO){
-		printf("Losing State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
 		doSheild(plate, temp, loseDir, next, turn);
 	}
 
@@ -978,7 +976,6 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 	if (next[1].x == -1 && next[0].x != -1) {
 		// Check if is there any other lose state.
 		if ((loseDir = getWinState(oPlate, &temp, oppo)) != NO) {
-			printf("Losing State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
 			// In this case, next[0] will using twice.
 			doSheild(plate, temp, loseDir, next, turn);
 		}
