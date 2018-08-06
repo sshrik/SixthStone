@@ -9,10 +9,8 @@ int main()	{
 	int weightListW[10] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
 
 	srand(time(NULL));
-	nextPut[0].x = -1;
-	nextPut[0].y = -1;
-	nextPut[1].x = -1;
-	nextPut[1].y = -1;
+	memset(nextPut, -1, sizeof(cord2D) * 2);
+	memset(before, 0x10, sizeof(cord2D) * 2);
 
 	blockNum = 5;
 
@@ -26,7 +24,7 @@ int main()	{
 			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn);
 		}
 		else {
-			sixthStoneBot(plate, nextPut, before, 2, weightListB,turn);
+			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn);
 			/*
 			for(i = 0; i < 2; i++)	{
 				scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
@@ -41,7 +39,8 @@ int main()	{
 			}
 			*/
 		}
-	}	while(whoWin(plate, nextPut, turn) == NO);
+		memcpy(before, nextPut, sizeof(cord2D) * 2);
+	}	while(allWhoWin(plate) == NO);
 	display(plate);
 	if(turn == WHITE) printf("White Win!\n");
 	else printf("Black Win!\n");

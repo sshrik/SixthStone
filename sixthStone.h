@@ -34,14 +34,15 @@ typedef struct{
 	int y;
 } cord2D;
 
-void display(char plate[][PLATE_MAX]);
+void display(char plate[][PLATE_MAX]); 
+int allWhoWin(char plate[][PLATE_MAX]);
 int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn);
 void put(char plate[][PLATE_MAX], cord2D cord, int what);
 int canPut(char plate[][PLATE_MAX], cord2D cord, int what);
 void changeTurn(int * turn);
 void initPlate(char plate[][PLATE_MAX], int blockNum);
 
-int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, int * weightList, int turn);
+int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, cord2D * before, int candLimit, int * weightList, int turn);
 int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn);
 void addWeight(char plate[][PLATE_MAX], cord2D temp, int cordWeight[][PLATE_MAX], int dir, int addNum);
 long long int calcWeight(int cordWeight[][PLATE_MAX]);

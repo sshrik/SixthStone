@@ -157,6 +157,38 @@ void display(char plate[][PLATE_MAX])	{
 	}*/
 }
 
+int allWhoWin(char plate[][PLATE_MAX]) {
+	int i, j;
+	cord2D temp[2];
+	char cPlate[PLATE_MAX][PLATE_MAX];
+
+	changeBlocking(plate, cPlate, BLACK);
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
+			temp[0].x = i;	temp[1].x = i;
+			temp[0].y = j;	temp[1].y = j;
+			if (whoWin(cPlate, &temp, BLACK) != NO) {
+				return cPlate[i][j];
+			}
+		}
+	}
+
+	changeBlocking(plate, cPlate, WHITE);
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
+			temp[0].x = i;	temp[1].x = i;
+			temp[0].y = j;	temp[1].y = j;
+			if (whoWin(cPlate, &temp, WHITE) != NO) {
+				return cPlate[i][j];
+			}
+		}
+	}
+
+	return NO;
+}
+
 int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn)	{
 	// TODO : Need to add 7-stones to loose.
 	char what = turn;
