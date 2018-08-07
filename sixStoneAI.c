@@ -342,214 +342,226 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int cont
 	// Does start form plate[cord.x][cord.y] to + 8 to "dir" direction is win state?
 	int i, count = 0;
 	
-	if ((cord.x == 0 || cord.y == 0 || cord.x == PLATE_MAX - 1 || cord.y == PLATE_MAX - 1)) {
-		// For start with cordinate (0, _), (_, 0), (18, _) or (_, 18) State check.
-		if (isOutOfPlate(cord, 7, dir)) return NO;
-		switch (dir) {
-			case EAST:	// Y++
-				if (plate[cord.x][cord.y + 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x][cord.y + i] == turn)	count++;
-					else if(plate[cord.x][cord.y + i] != EMPTY)	{
+	switch (dir) {
+	case EAST:	// Y++
+		if (cord.y == PLATE_MAX - 7) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x][cord.y + i] == turn) count++;
+					else if (plate[cord.x][cord.y + i] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			case WEST:	// Y--
-				if (plate[cord.x][cord.y - 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x][cord.y - i] == turn)	count++;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y + 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x][cord.y + i] == turn) count++;
+				else if (plate[cord.x][cord.y + i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case WEST:	// Y--
+		if (cord.y == 6) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x][cord.y - i] == turn) count++;
 					else if (plate[cord.x][cord.y - i] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			case SOUTH:	// X++
-				if (plate[cord.x + 6][cord.y] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x + i][cord.y] == turn)	count++;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y - 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x][cord.y - i] == turn) count++;
+				else if (plate[cord.x][cord.y - i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case SOUTH:	// X++
+		if (cord.x == PLATE_MAX - 7) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x + i][cord.y] == turn) count++;
 					else if (plate[cord.x + i][cord.y] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			case NORTH:	// X--
-				if (plate[cord.x - 6][cord.y] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x - i][cord.y] == turn)	count++;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x + i][cord.y] == turn) count++;
+				else if (plate[cord.x + i][cord.y] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case NORTH:	// X--
+		if (cord.x == 6) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x - i][cord.y] == turn) count++;
 					else if (plate[cord.x - i][cord.y] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x - i][cord.y] == turn) count++;
+				else if (plate[cord.x - i][cord.y] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
 
-			case EAST_SOUTH:
-				if (plate[cord.x + 6][cord.y + 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x + i][cord.y + i] == turn)	count++;
+	case EAST_SOUTH:	// X++ Y++
+		if (cord.y == PLATE_MAX - 7 || cord.x == PLATE_MAX - 7) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x + i][cord.y + i] == turn) count++;
 					else if (plate[cord.x + i][cord.y + i] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			case EAST_NORTH:
-				if (plate[cord.x - 6][cord.y + 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x - i][cord.y + i] == turn)	count++;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y + 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x + i][cord.y + i] == turn) count++;
+				else if (plate[cord.x + i][cord.y + i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case EAST_NORTH:	// X-- Y++
+		if (cord.y == PLATE_MAX - 7 || cord.x == 6) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x - i][cord.y + i] == turn) count++;
 					else if (plate[cord.x - i][cord.y + i] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			case WEST_SOUTH:
-				if (plate[cord.x + 6][cord.y - 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x + i][cord.y - i] == turn)	count++;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y + 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x - i][cord.y + i] == turn) count++;
+				else if (plate[cord.x - i][cord.y + i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case WEST_SOUTH:	// X++ Y--
+		if (cord.y == 6 || cord.x == PLATE_MAX - 7) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x + i][cord.y - i] == turn) count++;
 					else if (plate[cord.x + i][cord.y - i] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			case WEST_NORTH:
-				if (plate[cord.x - 6][cord.y - 6] == turn) return NO;
-				for (i = 0; i < 6; i++) {
-					if (plate[cord.x - i][cord.y - i] == turn)	count++;
+			}
+		}
+		if (isOutOfPlate(cord, 8, dir))	return NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y - 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x + i][cord.y - i] == turn) count++;
+				else if (plate[cord.x + i][cord.y - i] != EMPTY) {
+					count = 0;
+					break;
+				}
+			}
+			return count == continum ? YES : NO;
+		}
+		break;
+	case WEST_NORTH:	// X-- Y--
+		if (cord.y == 6 || cord.x == 6) {
+			if (plate[cord.x][cord.y] != turn) {
+				// if 4 or 5 turn`th stone exist, return true.
+				for (i = 1; i <= 6; i++) {
+					if (plate[cord.x - i][cord.y - i] == turn) count++;
 					else if (plate[cord.x - i][cord.y - i] != EMPTY) {
 						count = 0;
 						break;
 					}
 				}
 				return count == continum ? YES : NO;
-				break;
-			default:
-				break;
+			}
 		}
-	}
-	else {
 		if (isOutOfPlate(cord, 8, dir))	return NO;
-		switch (dir) {
-			case EAST:	// Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y + 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x][cord.y + i] == turn) count++;
-						else if (plate[cord.x][cord.y + i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
+		if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y - 7] != turn) {
+			// if 4 or 5 turn`th stone exist, return true.
+			for (i = 1; i <= 6; i++) {
+				if (plate[cord.x - i][cord.y - i] == turn) count++;
+				else if (plate[cord.x - i][cord.y - i] != EMPTY) {
+					count = 0;
+					break;
 				}
-				break;
-			case WEST:	// Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x][cord.y - 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x][cord.y - i] == turn) count++;
-						else if (plate[cord.x][cord.y - i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case SOUTH:	// X++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x + i][cord.y] == turn) count++;
-						else if (plate[cord.x + i][cord.y] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case NORTH:	// X--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x - i][cord.y] == turn) count++;
-						else if (plate[cord.x - i][cord.y] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-
-			case EAST_SOUTH:	// X++ Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y + 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x + i][cord.y + i] == turn) count++;
-						else if (plate[cord.x + i][cord.y + i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case EAST_NORTH:	// X-- Y++
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y + 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x - i][cord.y + i] == turn) count++;
-						else if (plate[cord.x - i][cord.y + i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case WEST_SOUTH:	// X++ Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x + 7][cord.y - 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x + i][cord.y - i] == turn) count++;
-						else if (plate[cord.x + i][cord.y - i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			case WEST_NORTH:	// X-- Y--
-				if (plate[cord.x][cord.y] != turn && plate[cord.x - 7][cord.y - 7] != turn) {
-					// if 4 or 5 turn`th stone exist, return true.
-					for (i = 1; i <= 6; i++) {
-						if (plate[cord.x - i][cord.y - i] == turn) count++;
-						else if (plate[cord.x - i][cord.y - i] != EMPTY) {
-							count = 0;
-							break;
-						}
-					}
-					return count == continum ? YES : NO;
-				}
-				break;
-			default:
-				break;
+			}
+			return count == continum ? YES : NO;
 		}
+		break;
+	default:
+		break;
 	}
 	return NO;
 }
@@ -832,58 +844,58 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		switch (dir) {
 		case EAST:
 			if (plate[temp.x][temp.y + nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x;
-				next[count].y = temp.y + nonTurnIndex;
+				next->x = temp.x;
+				next->y = temp.y + nonTurnIndex;
 				count++;
 			}
 			break;
 		case WEST:
 			if (plate[temp.x][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x;
-				next[count].y = temp.y - nonTurnIndex;
+				next->x = temp.x;
+				next->y = temp.y - nonTurnIndex;
 				count++;
 			}
 			break;
 		case SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y] == EMPTY) {
-				next[count].x = temp.x + nonTurnIndex;
-				next[count].y = temp.y;
+				next->x = temp.x + nonTurnIndex;
+				next->y = temp.y;
 				count++;
 			}
 			break;
 		case NORTH:
 			if (plate[temp.x - nonTurnIndex][temp.y] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y;
 				count++;
 			}
 			break;
 
 		case EAST_SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x + nonTurnIndex;
-				next[count].y = temp.y + nonTurnIndex;
+				next->x = temp.x + nonTurnIndex;
+				next->y = temp.y + nonTurnIndex;
 				count++;
 			}
 			break;
 		case EAST_NORTH:
 			if (plate[temp.x - nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y + nonTurnIndex;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y + nonTurnIndex;
 				count++;
 			}
 			break;
 		case WEST_SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y - nonTurnIndex;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y - nonTurnIndex;
 				count++;
 			}
 			break;
 		case WEST_NORTH:
 			if (plate[temp.x - nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y - nonTurnIndex;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y - nonTurnIndex;
 				count++;
 			}
 			break;
@@ -891,12 +903,17 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			break;
 		}
 
+		if (count == 1) {
+			put(plate, *next, turn);
+			return;
+		}
+
 		switch (dir) {
 		case EAST:	// Y++
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x][temp.y + i] == EMPTY) {
-					next[count].x = temp.x;
-					next[count].y = temp.y + i;
+					next->x = temp.x;
+					next->y = temp.y + i;
 					break;
 				}
 			}
@@ -904,8 +921,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case WEST:	// Y--
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x][temp.y - i] == EMPTY) {
-					next[count].x = temp.x;
-					next[count].y = temp.y - i;
+					next->x = temp.x;
+					next->y = temp.y - i;
 					break;
 				}
 			}
@@ -913,8 +930,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case SOUTH:	// X++
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x + i][temp.y] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y;
+					next->x = temp.x + i;
+					next->y = temp.y;
 					break;
 				}
 			}
@@ -922,8 +939,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case NORTH: // X--
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x - i][temp.y] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y;
+					next->x = temp.x - i;
+					next->y = temp.y;
 					break;
 				}
 			}
@@ -932,8 +949,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case EAST_SOUTH:	// X++ y++
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x + i][temp.y + i] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y + i;
+					next->x = temp.x + i;
+					next->y = temp.y + i;
 					break;
 				}
 			}
@@ -941,8 +958,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case EAST_NORTH:	// X-- y++
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x - i][temp.y + i] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y + i;
+					next->x = temp.x - i;
+					next->y = temp.y + i;
 					break;
 				}
 			}
@@ -950,8 +967,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case WEST_SOUTH:	// X++ y--
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x + i][temp.y - i] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y - i;
+					next->x = temp.x + i;
+					next->y = temp.y - i;
 					break;
 				}
 			}
@@ -959,8 +976,8 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case WEST_NORTH:	// x-- y--
 			for (i = nonTurnIndex; i < 7; i++) {
 				if (plate[temp.x - i][temp.y - i] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y - i;
+					next->x = temp.x - i;
+					next->y = temp.y - i;
 					break;
 				}
 			}
@@ -971,7 +988,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 	}
 
 	else {
-		for (i = 0; i < 8; i++) {
+		for (i = 1; i < 8; i++) {
 			switch (dir) {
 			case EAST:
 				if (plate[temp.x][temp.y + i] != oppo && (plate[temp.x][temp.y + i + 1] == oppo || plate[temp.x][temp.y + i + 1] == BLOCK)) {
@@ -993,7 +1010,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 				break;
 			case NORTH:
 				if (plate[temp.x - i][temp.y] != oppo && (plate[temp.x - i - 1][temp.y] == oppo || plate[temp.x - i - 1][temp.y] == BLOCK)) {
-					nonTurnIndex = i;
+					nonTurnIndex = i;	
 					break;
 				}
 				break;
@@ -1028,74 +1045,96 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 			if (nonTurnIndex != -1) break;
 		}
 
+		if (nonTurnIndex == -1) {
+			nonTurnIndex = 0;
+		}
+		
+		// For case to sheild X_O_OOO_.
+		if (isSpecialCase(plate, temp, dir, turn)) {
+			nonTurnIndex += 1;
+		}
+
 		switch (dir) {
 		case EAST:
 			if (plate[temp.x][temp.y + nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x;
-				next[count].y = temp.y + nonTurnIndex;
+				next->x = temp.x;
+				next->y = temp.y + nonTurnIndex;
 				count++;
 			}
 			break;
 		case WEST:
 			if (plate[temp.x][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x;
-				next[count].y = temp.y - nonTurnIndex;
+				next->x = temp.x;
+				next->y = temp.y - nonTurnIndex;
 				count++;
 			}
 			break;
 		case SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y] == EMPTY) {
-				next[count].x = temp.x + nonTurnIndex;
-				next[count].y = temp.y;
+				next->x = temp.x + nonTurnIndex;
+				next->y = temp.y;
 				count++;
 			}
 			break;
 		case NORTH:
 			if (plate[temp.x - nonTurnIndex][temp.y] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y;
 				count++;
 			}
 			break;
 
 		case EAST_SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x + nonTurnIndex;
-				next[count].y = temp.y + nonTurnIndex;
+				next->x = temp.x + nonTurnIndex;
+				next->y = temp.y + nonTurnIndex;
 				count++;
 			}
 			break;
 		case EAST_NORTH:
 			if (plate[temp.x - nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y + nonTurnIndex;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y + nonTurnIndex;
 				count++;
 			}
 			break;
 		case WEST_SOUTH:
 			if (plate[temp.x + nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x + nonTurnIndex;
-				next[count].y = temp.y - nonTurnIndex;
+				next->x = temp.x + nonTurnIndex;
+				next->y = temp.y - nonTurnIndex;
 				count++;
 			}
 			break;
 		case WEST_NORTH:
 			if (plate[temp.x - nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
-				next[count].x = temp.x - nonTurnIndex;
-				next[count].y = temp.y - nonTurnIndex;
+				next->x = temp.x - nonTurnIndex;
+				next->y = temp.y - nonTurnIndex;
 				count++;
 			}
 			break;
 		default:
 			break;
 		}
+		
+		if (count == 1) {
+			put(plate, * next, turn);
+			return;
+		}
 
 		switch (dir) {
 		case EAST:	// Y++
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x][temp.y + i] == EMPTY) {
-					next[count].x = temp.x;
-					next[count].y = temp.y + i;
+					next->x = temp.x;
+					next->y = temp.y + i;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x][temp.y + nonTurnIndex] == EMPTY) {
+					next->x = temp.x;
+					next->y = temp.y + nonTurnIndex;
 					break;
 				}
 			}
@@ -1103,8 +1142,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case WEST:	// Y--
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x][temp.y - i] == EMPTY) {
-					next[count].x = temp.x;
-					next[count].y = temp.y - i;
+					next->x = temp.x;
+					next->y = temp.y - i;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x][temp.y - nonTurnIndex] == EMPTY) {
+					next->x = temp.x;
+					next->y = temp.y - nonTurnIndex;
 					break;
 				}
 			}
@@ -1112,8 +1159,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case SOUTH:	// X++
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y;
+					next->x = temp.x + i;
+					next->y = temp.y;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x + nonTurnIndex][temp.y] == EMPTY) {
+					next->x = temp.x + nonTurnIndex;
+					next->y = temp.y;
 					break;
 				}
 			}
@@ -1121,8 +1176,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case NORTH: // X--
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y;
+					next->x = temp.x - i;
+					next->y = temp.y;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x - nonTurnIndex][temp.y] == EMPTY) {
+					next->x = temp.x - nonTurnIndex;
+					next->y = temp.y;
 					break;
 				}
 			}
@@ -1131,8 +1194,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case EAST_SOUTH:	// X++ y++
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y + i] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y + i;
+					next->x = temp.x + i;
+					next->y = temp.y + i;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x + nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
+					next->x = temp.x + nonTurnIndex;
+					next->y = temp.y + nonTurnIndex;
 					break;
 				}
 			}
@@ -1140,8 +1211,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case EAST_NORTH:	// X-- y++
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y + i] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y + i;
+					next->x = temp.x - i;
+					next->y = temp.y + i;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x - nonTurnIndex][temp.y + nonTurnIndex] == EMPTY) {
+					next->x = temp.x - nonTurnIndex;
+					next->y = temp.y + nonTurnIndex;
 					break;
 				}
 			}
@@ -1149,8 +1228,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case WEST_SOUTH:	// X++ y--
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x + i][temp.y - i] == EMPTY) {
-					next[count].x = temp.x + i;
-					next[count].y = temp.y - i;
+					next->x = temp.x + i;
+					next->y = temp.y - i;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x + nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
+					next->x = temp.x + nonTurnIndex;
+					next->y = temp.y - nonTurnIndex;
 					break;
 				}
 			}
@@ -1158,8 +1245,16 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		case WEST_NORTH:	// x-- y--
 			for (i = nonTurnIndex + 1; i < 8; i++) {
 				if (plate[temp.x - i][temp.y - i] == EMPTY) {
-					next[count].x = temp.x - i;
-					next[count].y = temp.y - i;
+					next->x = temp.x - i;
+					next->y = temp.y - i;
+					break;
+				}
+			}
+			nonTurnIndex -= 1;
+			if (next->x == -1) {
+				if (plate[temp.x - nonTurnIndex][temp.y - nonTurnIndex] == EMPTY) {
+					next->x = temp.x - nonTurnIndex;
+					next->y = temp.y - nonTurnIndex;
 					break;
 				}
 			}
@@ -1169,8 +1264,42 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 		}
 	}
 
-	if (next[0].x != -1)	put(plate, next[0], turn);
-	if (next[1].x != -1)	put(plate, next[1], turn);
+	if (next->x != -1)	put(plate,* next, turn);
+}
+
+int isSpecialCase(char plate[][PLATE_MAX], cord2D temp, int dir, int turn) {
+	// Check if start with __ or X_ and end with O_ or OX.
+	int oppo = turn == BLACK ? WHITE : BLACK;
+
+	switch (dir) {
+		case EAST:	// Y++
+			return (plate[temp.x][temp.y + 1] == EMPTY && (plate[temp.x][temp.y + 6] == BLOCK || plate[temp.x][temp.y + 6] == oppo)) || (plate[temp.x][temp.y + 6] == EMPTY && (plate[temp.x][temp.y + 1] == BLOCK || plate[temp.x][temp.y + 1] == oppo));
+			break;
+		case WEST:	// Y--
+			return (plate[temp.x][temp.y - 1] == EMPTY && (plate[temp.x][temp.y - 6] == BLOCK || plate[temp.x][temp.y - 6] == oppo)) || (plate[temp.x][temp.y - 6] == EMPTY && (plate[temp.x][temp.y - 1] == BLOCK || plate[temp.x][temp.y - 1] == oppo));
+			break;
+		case SOUTH:	// X++
+			return (plate[temp.x + 1][temp.y] == EMPTY && (plate[temp.x + 6][temp.y] == BLOCK || plate[temp.x + 6][temp.y] == oppo)) || (plate[temp.x + 6][temp.y] == EMPTY && (plate[temp.x + 1][temp.y] == BLOCK || plate[temp.x + 1][temp.y] == oppo));
+			break;
+		case NORTH:	// X--
+			return (plate[temp.x - 1][temp.y] == EMPTY && (plate[temp.x - 6][temp.y] == BLOCK || plate[temp.x - 6][temp.y] == oppo)) || (plate[temp.x - 6][temp.y] == EMPTY && (plate[temp.x - 1][temp.y] == BLOCK || plate[temp.x - 1][temp.y] == oppo));
+			break;
+
+		case EAST_SOUTH:
+			return (plate[temp.x + 1][temp.y + 1] == EMPTY && (plate[temp.x + 6][temp.y + 6] == BLOCK || plate[temp.x + 6][temp.y + 6] == oppo)) || (plate[temp.x + 6][temp.y + 6] == EMPTY && (plate[temp.x + 1][temp.y + 1] == BLOCK || plate[temp.x + 1][temp.y + 1] == oppo));
+			break;
+		case EAST_NORTH:
+			return (plate[temp.x - 1][temp.y + 1] == EMPTY && (plate[temp.x - 6][temp.y + 6] == BLOCK || plate[temp.x - 6][temp.y + 6] == oppo)) || (plate[temp.x - 6][temp.y + 6] == EMPTY && (plate[temp.x - 1][temp.y + 1] == BLOCK || plate[temp.x - 1][temp.y + 1] == oppo));
+			break;
+		case WEST_SOUTH:
+			return (plate[temp.x + 1][temp.y - 1] == EMPTY && (plate[temp.x + 6][temp.y - 6] == BLOCK || plate[temp.x + 6][temp.y - 6] == oppo)) || (plate[temp.x + 6][temp.y - 6] == EMPTY && (plate[temp.x + 1][temp.y - 1] == BLOCK || plate[temp.x + 1][temp.y - 1] == oppo));
+			break;
+		case WEST_NORTH:
+			return (plate[temp.x - 1][temp.y - 1] == EMPTY && (plate[temp.x - 6][temp.y - 6] == BLOCK || plate[temp.x - 6][temp.y - 6] == oppo)) || (plate[temp.x - 6][temp.y - 6] == EMPTY && (plate[temp.x - 1][temp.y - 1] == BLOCK || plate[temp.x - 1][temp.y - 1] == oppo));
+			break;
+		default:
+			break;
+	}
 }
 
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn)	{
@@ -1215,7 +1344,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		next[0].y = oppoCandCord[index[0]].y;
 
 		put(plate, next[0], turn);
-		return 0;
+		return ;
 	}
 
 	//Search in case we can win.
@@ -1227,7 +1356,8 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	else if((loseDir = getWinState(oPlate, &temp, oppo)) != NO){
 		printf("Losing State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
 		system("pause");
-		doSheild(plate, temp, loseDir, next, turn);
+		doSheild(plate, temp, loseDir, &next[0], turn);
+		printf("Sheild at %d, %d\n", next[0].x, next[0].y);
 	}
 
 	// Init temp - plate.
@@ -1240,7 +1370,8 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 			printf("Losing State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
 			system("pause");
 			// In this case, next[0] will using twice.
-			doSheild(plate, temp, loseDir, next, turn);
+			doSheild(plate, temp, loseDir, &next[1], turn);
+			printf("Sheild at %d, %d\n", next[1].x, next[1].y);
 		}
 		else {
 			// Calculate opposite turn`s highest plate.

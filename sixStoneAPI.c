@@ -168,7 +168,7 @@ int allWhoWin(char plate[][PLATE_MAX]) {
 		for (j = 0; j < PLATE_MAX; j++) {
 			temp[0].x = i;	temp[1].x = i;
 			temp[0].y = j;	temp[1].y = j;
-			if (whoWin(cPlate, &temp, BLACK) != NO) {
+			if (whoWin(cPlate, temp, BLACK) != NO) {
 				return cPlate[i][j];
 			}
 		}
@@ -180,7 +180,7 @@ int allWhoWin(char plate[][PLATE_MAX]) {
 		for (j = 0; j < PLATE_MAX; j++) {
 			temp[0].x = i;	temp[1].x = i;
 			temp[0].y = j;	temp[1].y = j;
-			if (whoWin(cPlate, &temp, WHITE) != NO) {
+			if (whoWin(cPlate, temp, WHITE) != NO) {
 				return cPlate[i][j];
 			}
 		}
@@ -321,16 +321,16 @@ int isOutOfPlate(cord2D cord, int next, int dir) {
 		break;
 
 	case EAST_SOUTH:	// X++ Y++
-		return cord.x + next - 1 >= PLATE_MAX && cord.y + next - 1 >= PLATE_MAX;
+		return cord.x + next - 1 >= PLATE_MAX || cord.y + next - 1 >= PLATE_MAX;
 		break;
 	case EAST_NORTH:	// X-- Y++
-		return cord.x - next + 1 < 0 && cord.y + next - 1 >= PLATE_MAX;
+		return cord.x - next + 1 < 0 || cord.y + next - 1 >= PLATE_MAX;
 		break;
 	case WEST_SOUTH:	// X++ Y--
-		return cord.x + next - 1 >= PLATE_MAX && cord.y - next + 1 < 0;
+		return cord.x + next - 1 >= PLATE_MAX || cord.y - next + 1 < 0;
 		break;
 	case WEST_NORTH:	// X-- Y-- 
-		return cord.x - next + 1 < 0 && cord.y - next + 1 < 0;
+		return cord.x - next + 1 < 0 || cord.y - next + 1 < 0;
 		break;
 	default:
 		break;

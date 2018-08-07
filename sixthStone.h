@@ -51,6 +51,7 @@ int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int cont
 int isOutOfPlate(cord2D cord, int next, int dir);
 void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int turn);
 void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn);
+int isSpecialCase(char plate[][PLATE_MAX], cord2D temp, int dir, int turn);
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn);
 void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn);
 
