@@ -61,7 +61,6 @@ typedef struct{
 	int y;
 } cord2D;
 
-void display(char plate[][PLATE_MAX]);
 int allWhoWin(char plate[][PLATE_MAX]);
 int whoWin(char plate[][PLATE_MAX], cord2D* cord, int turn);
 void put(char plate[][PLATE_MAX], cord2D cord, int what);

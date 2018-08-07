@@ -43,15 +43,16 @@ int showBoard(int x, int y) : [x, y] 좌표에 무슨 돌이 존재하는지 보여주는 함수 (
 // 제출시 실행파일은 반드시 팀명으로 제출!
 char info[] = { "TeamName:SixthStone,Department:WLK" };
 
+cord2D next[2] = { { -1, -1 }, { -1, -1 } }, before[2] = { {0x10, 0x10}, {0x10, 0x10} };
+
 // 자신이 흑이라고 가정하고 플레이 하겠소
 void myturn(int cnt) {
 
 	int x[2], y[2];
 	int i, j;
 	char plate[PLATE_MAX][PLATE_MAX];
-	cord2D next[2];
 	int weightListB[10] = { 1, 3, 6, 200, 300, 1, 3, 6, 10, 15 };
-
+	
 	// make plate
 	for (i = 0; i < PLATE_MAX; i++){
 		for (j = 0; j < PLATE_MAX; j++){
@@ -73,11 +74,17 @@ void myturn(int cnt) {
 		}
 	}
 
-	writeLog("내 차례입니다.");
-
 	// calculate
-	sixthStoneBot(plate, next, NULL, cnt, weightListB, BLACK);
-	writeLog("어디에 놓을지 찾았습니다.");
+	sixthStoneBot(plate, next, before, cnt, weightListB, BLACK);
+
+	for (i = 0; i < 2; i++){
+		before[i].x = next[i].x;
+		before[i].y = next[i].y;
+	}
+
+	char debugBuffer[200] = {0, };
+	sprintf(debugBuffer, "found it : (%d, %d) (%d, %d)\n", next[0].x, next[0].y, next[1].x, next[1].y);
+	writeLog(debugBuffer);
 
 	// translate cord2D to array of x,y
 	for (i = 0; i < cnt; i++){
@@ -85,8 +92,6 @@ void myturn(int cnt) {
 		y[i] = next[i].y;
 	}
 
-	// free next
-	free(next);
 
 	domymove(x, y, cnt);
 }
@@ -1395,67 +1400,6 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 //									sixStoneAPI.c
 //
 // ######################################################################################
-
-void display(char plate[][PLATE_MAX])	{
-	// Clear monitor and Display plate with x - y number.
-	// int i, j;
-
-	int candidateWeight[PLATE_MAX][PLATE_MAX] = { { 0, } };
-	int i, j, candidateNum = 0;
-	int maxWeight = -1;
-	int turn, tPlate[PLATE_MAX][PLATE_MAX];
-	cord2D temp;
-	cord2D candCord[PLATE_MAX * PLATE_MAX];
-
-	system("cls");
-
-	// Printf with color.
-	// 30 default	31 Bright Red	32 Green	33 Yellow	34 Blue	35 Violet	36 Bright Blue	37 Bright White
-
-	printf("%c[1;%dm", 27, 37);
-	printf("*\t");
-	printf("%c[0m", 27);
-
-	for (j = 0; j < PLATE_MAX; j++) {
-		printf("%c[1;%dm", 27, 37);
-		printf("%d\t", j);
-		printf("%c[0m", 27);
-	}
-	printf("\n");
-
-	for (i = 0; i < PLATE_MAX; i++) {
-		printf("%c[1;%dm", 27, 37);
-		printf("%d\t", i);
-		printf("%c[0m", 27);
-		for (j = 0; j < PLATE_MAX; j++) {
-			switch (plate[i][j]) {
-			case BLACK:
-				printf("%c[1;%dm", 27, 34);
-				printf("B\t");
-				printf("%c[0m", 27);
-				break;
-			case WHITE:
-				printf("%c[1;%dm", 27, 37);
-				printf("W\t");
-				printf("%c[0m", 27);
-				break;
-			case EMPTY:
-				printf("%c[1;%dm", 27, 30);
-				printf("E\t");
-				printf("%c[0m", 27);
-				break;
-			case BLOCK:
-				printf("%c[1;%dm", 27, 36);
-				printf("C\t");
-				printf("%c[0m", 27);
-				break;
-			default:
-				break;
-			}
-		}
-		printf("\n");
-	}
-}
 
 int allWhoWin(char plate[][PLATE_MAX]) {
 	int i, j;
