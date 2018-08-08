@@ -16,7 +16,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bo
 	int temp, candidateNum;
 	cord2D selectedCord;
 	cord2D candCord[5];//temporary array size
-	cord2D tempCord[5];//for use before.....????????
+	cord2D tempCord[2];//for use before.....????????
 	char savedPlate[PLATE_MAX][PLATE_MAX], changedPlate[PLATE_MAX][PLATE_MAX]; //original plate which stored at this depth's method.
 	copyMap(savedPlate, tempPlate);
 
@@ -30,7 +30,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bo
 
 	changeBlocking(tempPlate, changedPlate, turnInTree);
 
-	if (depth == 0 || (turnCount == 1 && getWinState(tempPlate, &cord, turnInTree) != NO)) {
+	if (depth == 0 || (turnCount == 1 && getWinState(changedPlate, &cord, turnInTree) != NO)) {
 	//	printf("depth : %d, dir : %d\n", depth, getWinState(tempPlate, &cord, turnInTree));
 
 		candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, tempCord, 2, weightList, myRealTurn); //myRealTurn에 대한 tempCandidateWeight구하기
