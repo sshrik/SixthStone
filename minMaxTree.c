@@ -17,7 +17,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bo
 	cord2D selectedCord;
 	cord2D candCord[5];//temporary array size
 	cord2D tempCord[5];//for use before.....????????
-	char savedPlate[PLATE_MAX][PLATE_MAX]; //original plate which stored at this depth's method.
+	char savedPlate[PLATE_MAX][PLATE_MAX], changedPlate[PLATE_MAX][PLATE_MAX]; //original plate which stored at this depth's method.
 	copyMap(savedPlate, tempPlate);
 
 	if (--turnCount < 0) {
@@ -28,17 +28,19 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bo
 		cord.y = -1;
 	}
 
+	changeBlocking(tempPlate, changedPlate, turnInTree);
+
 	if (depth == 0 || (turnCount == 1 && getWinState(tempPlate, &cord, turnInTree) != NO)) {
 	//	printf("depth : %d, dir : %d\n", depth, getWinState(tempPlate, &cord, turnInTree));
 
-		candidateNum = getCandidate(tempPlate, tempCandidateWeight, candCord, tempCord, 2, weightList, myRealTurn); //myRealTurn에 대한 tempCandidateWeight구하기
+		candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, tempCord, 2, weightList, myRealTurn); //myRealTurn에 대한 tempCandidateWeight구하기
 		int weight = calcWeight(tempCandidateWeight);
 	//	printf("weight : %d\n", weight);
 		//system("pause");
 		return weight;
 	}
 
-	candidateNum = getCandidate(tempPlate, tempCandidateWeight, candCord, tempCord, 2, weightList, turnInTree); //다음 바둑돌 위치 찾기
+	candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, tempCord, 2, weightList, turnInTree); //다음 바둑돌 위치 찾기
 	//win state 경우 찾은 후 해당 자리에 candCord좌표 설정
 	for (int i = 0; i < candidateNum; i++) {
 		put(tempPlate, candCord[i], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
