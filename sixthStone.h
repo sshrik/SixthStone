@@ -30,7 +30,7 @@
 #define NO -1
 #define YES 1
 
-#define DEPTH_MAX 6
+#define DEPTH_MAX 16
 
 typedef struct{
 	int x;

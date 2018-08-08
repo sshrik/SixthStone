@@ -1335,6 +1335,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	int i, oppo, index[2], loseDir, count = 0;
 	int candidateWeight[PLATE_MAX][PLATE_MAX];
 	long long int oppoWeight, myWeight, highestWeight = 0;
+	clock_t start, end;
 
 	// turn mean my color, oppo mean other`s color.
 	if(turn == BLACK) oppo = WHITE;
@@ -1394,9 +1395,9 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 			system("pause");
 			// In this case, next[0] will using twice.
 			doSheild(plate, temp, loseDir, &next[1], turn);
-			printf("Sheild at %d, %d\n", next[1].x, next[1].y);
 		}
 		else {
+			/*
 			// Calculate opposite turn`s highest plate.
 			oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, before, 20, weightList, oppo);
 			oppoWeight = calcWeight(candidateWeight);
@@ -1413,10 +1414,16 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 			}
 			next[1].x = oppoCandCord[index[1]].x;
 			next[1].y = oppoCandCord[index[1]].y;
+			put(plate, next[1], turn);*/
+
+
+			getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
+			minMax(plate, &next[1], temp, DEPTH_MAX - 1, true, candidateWeight, weightList, turn, 1, WHITE, true);
 			put(plate, next[1], turn);
 		}
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
+		/*
 			// Calculate opposite turn`s highest plate.
 			oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, before, 20, weightList, oppo);
 			oppoWeight = calcWeight(candidateWeight);
@@ -1461,37 +1468,50 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		next[1].y = oppoCandCord[index[1]].y;
 		put(plate, next[1], turn);
 
-			for (i = 0; i < oppoCandNum; i++) {
-				memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
-				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-				myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, before, 20, weightList, turn);
-				myWeight = calcWeight(candidateWeight);
-				if (myWeight > highestWeight) index[0] = i;
-			}
+		for (i = 0; i < oppoCandNum; i++) {
+			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, before, 20, weightList, turn);
+			myWeight = calcWeight(candidateWeight);
+			if (myWeight > highestWeight) index[0] = i;
+		}
 
-			next[0].x = oppoCandCord[index[0]].x;
-			next[0].y = oppoCandCord[index[0]].y;
+		next[0].x = oppoCandCord[index[0]].x;
+		next[0].y = oppoCandCord[index[0]].y;
 
-			put(plate, next[0], turn);
+		put(plate, next[0], turn);
 
-			// Init temp - plate.
-			changeBlocking(plate, mPlate, turn);
-			changeBlocking(plate, oPlate, oppo);
-			highestWeight = 0;
+		// Init temp - plate.
+		changeBlocking(plate, mPlate, turn);
+		changeBlocking(plate, oPlate, oppo);
+		highestWeight = 0;
+	
+		// Calculate opposite turn`s highest plate.
+		oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, before, 20, weightList, oppo);
+		oppoWeight = calcWeight(candidateWeight);
 
-			// Calculate opposite turn`s highest plate.
-			oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, before, 20, weightList, oppo);
-			oppoWeight = calcWeight(candidateWeight);
+		for (i = 0; i < oppoCandNum; i++) {
+			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
+			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
+			myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, before, 20, weightList, turn);
+			myWeight = calcWeight(candidateWeight);
+			if (myWeight > highestWeight) index[1] = i;
+		}
+		next[1].x = oppoCandCord[index[1]].x;
+		next[1].y = oppoCandCord[index[1]].y;
+		put(plate, next[1], turn);*/
 
-			for (i = 0; i < oppoCandNum; i++) {
-				memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
-				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
-				myCandNum = getCandidate(tempPlate, candidateWeight, myCandCord, before, 20, weightList, turn);
-				myWeight = calcWeight(candidateWeight);
-				if (myWeight > highestWeight) index[1] = i;
-			}
-			next[1].x = oppoCandCord[index[1]].x;
-			next[1].y = oppoCandCord[index[1]].y;
-			put(plate, next[1], turn);
+		start = clock();
+		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
+		minMax(plate, &next[0], temp, DEPTH_MAX, true, candidateWeight, weightList, turn, 2, WHITE, true);
+		put(plate, next[0], turn);
+
+		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
+		minMax(plate, &next[1], temp, DEPTH_MAX - 1, true, candidateWeight, weightList, turn, 1, WHITE, true);
+		put(plate, next[1], turn);
+		end = clock();
+
+		printf("%.3lf sec.\n", ((double)(end-start) / (double)1000));
+		system("pause");
 	}
 }

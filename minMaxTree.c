@@ -3,6 +3,7 @@
 int alpha = -9999, beta = 9999;
 
 void copyMap(char copyPlate[][PLATE_MAX], char originalPlate[][PLATE_MAX]) {
+	// -> can change with memcpy(copyPlate, originalPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 	for (int i = 0; i < PLATE_MAX; i++) {
 		for (int j = 0; j < PLATE_MAX; j++) {
 			copyPlate[i][j] = originalPlate[i][j];
@@ -28,11 +29,11 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bo
 	}
 
 	if (depth == 0 || (turnCount == 1 && getWinState(tempPlate, &cord, turnInTree) != NO)) {
-		printf("depth : %d, dir : %d\n", depth, getWinState(tempPlate, &cord, turnInTree));
+	//	printf("depth : %d, dir : %d\n", depth, getWinState(tempPlate, &cord, turnInTree));
 
 		candidateNum = getCandidate(tempPlate, tempCandidateWeight, candCord, tempCord, 2, weightList, myRealTurn); //myRealTurn에 대한 tempCandidateWeight구하기
 		int weight = calcWeight(tempCandidateWeight);
-		printf("weight : %d\n", weight);
+	//	printf("weight : %d\n", weight);
 		//system("pause");
 		return weight;
 	}
@@ -41,27 +42,19 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bo
 	//win state 경우 찾은 후 해당 자리에 candCord좌표 설정
 	for (int i = 0; i < candidateNum; i++) {
 		put(tempPlate, candCord[i], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
-		display(tempPlate);
-		printf("%c_candidateNum : %d\n", turnInTree, candidateNum);
-		printf("좌표 : (%d,%d), depth : %d\n", candCord[i].x, candCord[i].y, depth);
+		//display(tempPlate);
+	//	printf("%c_candidateNum : %d\n", turnInTree, candidateNum);
+	//	printf("좌표 : (%d,%d), depth : %d\n", candCord[i].x, candCord[i].y, depth);
 		//system("pause");
 		temp = minMax(tempPlate, next, candCord[i], depth - 1, isMaximizingPlayer, tempCandidateWeight, weightList, turnInTree, turnCount, myRealTurn, false);
 		copyMap(tempPlate, savedPlate);
 		if (isMaximizingPlayer) {
-			//alpha = max(alpha, temp);
-			//if (beta <= alpha) {
-			//	break;
-			//}
 			if (maxValue < temp) {
 				maxValue = temp;
 				selectedCord = candCord[i];
 			}
 		}
 		else {
-			//beta = min(beta, temp);
-			//if (alpha <= beta) {
-			//	break;
-			//}
 			if (minValue > temp) {
 				minValue = temp;
 				selectedCord = candCord[i];

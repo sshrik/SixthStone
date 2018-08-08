@@ -20,8 +20,8 @@ int main()	{
 	do {
 		changeTurn(&turn);
 		display(plate);
-		printf("Put at %d, %d and %d, %d\n", nextPut[0].x, nextPut[0].y, nextPut[1].x, nextPut[1].y);
-		system("pause");
+//		printf("Put at %d, %d and %d, %d\n", nextPut[0].x, nextPut[0].y, nextPut[1].x, nextPut[1].y);
+//		system("pause");
 
 		if(turn == WHITE)	{
 			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn);
