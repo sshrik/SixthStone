@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
+#include<stdbool.h>
 #pragma warning(disable:4996)
 
 /* << CORDINATE Standard >>
@@ -29,6 +30,8 @@
 #define NO -1
 #define YES 1
 
+#define DEPTH_MAX 6
+
 typedef struct{
 	int x;
 	int y;
@@ -55,5 +58,6 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 int isSpecialCase(char plate[][PLATE_MAX], cord2D temp, int dir, int turn);
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn);
 void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn);
+int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bool isMaximizingPlayer, int tempCandidateWeight[][PLATE_MAX], int *weightList, int turnInTree, int turnCount, int myRealTurn, bool isRoot);
 
 #endif
