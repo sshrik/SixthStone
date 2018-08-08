@@ -8,8 +8,13 @@ void display(char plate[][PLATE_MAX])	{
 	int i, j, candidateNum = 0;
 	int maxWeight = -1;
 	int turn, tPlate[PLATE_MAX][PLATE_MAX];
+	int weightListB[10] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
+	int weightListW[10] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
 	cord2D temp;
 	cord2D candCord[PLATE_MAX * PLATE_MAX];
+	cord2D before[2];
+
+	memset(before, 0x10, sizeof(cord2D) * 2);
 
 	system("cls");
 
@@ -63,7 +68,7 @@ void display(char plate[][PLATE_MAX])	{
 	turn = WHITE;
 
 	changeBlocking(plate, tPlate, turn);
-	candidateNum = getCandidate(tPlate, candidateWeight, candCord, turn);
+	candidateNum = getCandidate(tPlate, candidateWeight, candCord, before, 20, weightListW, turn);
 	printf("%c[1;%dm", 27, 37);
 	printf("*\t");
 	printf("%c[0m", 27);
@@ -111,7 +116,7 @@ void display(char plate[][PLATE_MAX])	{
 	turn = BLACK;
 
 	changeBlocking(plate, tPlate, turn);
-	candidateNum = getCandidate(tPlate, candidateWeight, candCord, turn);
+	candidateNum = getCandidate(tPlate, candidateWeight, candCord, before, 20, weightListB, turn);
 	printf("%c[1;%dm", 27, 37);
 	printf("*\t");
 	printf("%c[0m", 27);

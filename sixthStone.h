@@ -45,6 +45,7 @@ void initPlate(char plate[][PLATE_MAX], int blockNum);
 int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D *candCord, cord2D * before, int candLimit, int * weightList, int turn);
 int getCandWeight(char plate[][PLATE_MAX], cord2D temp, int turn);
 void addWeight(char plate[][PLATE_MAX], cord2D temp, int cordWeight[][PLATE_MAX], int dir, int addNum);
+void changeCandWeight(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord2D before, int * weightList, int turn);
 long long int calcWeight(int cordWeight[][PLATE_MAX]);
 int getWinState(char plate[][PLATE_MAX], cord2D *cord, int turn);
 int isWinState(char plate[][PLATE_MAX], cord2D cord, int turn, int dir, int continum);

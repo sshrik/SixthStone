@@ -1,11 +1,11 @@
 #include "sixthStone.h"
 
-int consoleMain()	{
+int main()	{
 	char plate[PLATE_MAX][PLATE_MAX];
 	int turn = WHITE;
 	int i, blockNum;
 	cord2D nextPut[2], before[2];
-	int weightListB[10] = { 1, 3, 6, 200, 300, 1, 3, 6, 10, 15 };
+	int weightListB[10] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
 	int weightListW[10] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
 
 	srand(time(NULL));
@@ -20,11 +20,15 @@ int consoleMain()	{
 	do {
 		changeTurn(&turn);
 		display(plate);
+		printf("Put at %d, %d and %d, %d\n", nextPut[0].x, nextPut[0].y, nextPut[1].x, nextPut[1].y);
+		system("pause");
+
 		if(turn == WHITE)	{
 			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn);
 		}
 		else {
 			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn);
+			
 			/*
 			for(i = 0; i < 2; i++)	{
 				scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
@@ -35,7 +39,7 @@ int consoleMain()	{
 					scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
 				}
 				put(plate, nextPut[i], turn);
-				display(plate, lenCord);
+				display(plate);
 			}
 			*/
 		}
