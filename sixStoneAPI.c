@@ -350,3 +350,91 @@ void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int 
 		}
 	}
 }
+
+int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn) {
+	// If do at cord location with turn`th turn, does occured seven stone?
+	int i, j, k, dir;
+	char start = plate[cord.x][cord.y];
+	char tempPlate[PLATE_MAX][PLATE_MAX];
+
+	cord2D temp;
+
+	changeBlocking(plate, tempPlate, turn);
+	tempPlate[cord.x][cord.y] = turn;
+
+	for (j = 0; j < PLATE_MAX; j++) {
+		for (k = 0; k < PLATE_MAX; k++) {
+			temp.x = j;
+			temp.y = k;
+			for(dir = 1; dir <= 8; dir++)	{
+				isOutOfPlate(temp, 7, dir);
+				switch (dir) {
+					case EAST:
+						for (i = 0; i < 7; i++) {
+							if (plate[j][k + i] != start || plate[j][k + i] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+					case WEST:
+						for (i = 0; i < 7; i++) {
+							if (plate[j][k - i] != start || plate[j][k - i] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+					case SOUTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j + i][k] != start || plate[j + i][k] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+					case NORTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j - i][k] != start || plate[j - i][k] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+
+
+					case EAST_SOUTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j + i][k + i] != start || plate[j + i][k + i] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+					case EAST_NORTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j - i][k + i] != start || plate[j - i][k + i] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+					case WEST_SOUTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j + i][k - i] != start || plate[j + i][k - i] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+					case WEST_NORTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j - i][k - i] != start || plate[j - i][k - i] != BLOCK) {
+								return NO;
+							}
+						}
+						break;
+				}
+			}
+		}
+	}
+
+	if (isOutOfPlate(cord, 7, dir)) return NO;
+
+	
+
+	return YES;
+}
