@@ -7,12 +7,21 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 	cord2D temp;
 	int* candWeightList = (int *)malloc(sizeof(int) * (candLimit * 2));
 	int* candLengthList = (int *)malloc(sizeof(int) * (candLimit * 2));
+	int realWeightList[10];
+	int count = getWinningStateNumber(plate, 3, turn);
 
 	// Init array.
 	memset(candidateWeight, 0, sizeof(int) * PLATE_MAX * PLATE_MAX);
 	memset(candCord, -1, sizeof(cord2D) * candLimit);
 	memset(candWeightList, 0x00, sizeof(int) * candLimit);
 	memset(candLengthList, 0x00, sizeof(int) * candLimit);
+
+	if (count > WINSTATE_MAX) {
+		memcpy(realWeightList, &weightList[10], sizeof(int) * 10);
+	}
+	else {
+		memcpy(realWeightList, &weightList[0], sizeof(int) * 10);
+	}
 
 	// Add weight for winning state.
 	for (i = 0; i < PLATE_MAX; i++) {
@@ -22,68 +31,68 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			for (dir = 1; dir <= 8; dir++) {
 				if (turn == WHITE) {
 					if (isWinState(plate, temp, WHITE, dir, 5) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[4]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[4]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 4) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[3]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[3]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 3) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[2]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[2]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 2) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[1]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[1]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 1) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[0]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[0]);
 					}
 
 					if (isWinState(plate, temp, BLACK, dir, 5) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[9]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[9]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 4) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[8]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[8]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 3) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[7]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[7]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 2) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[6]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[6]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 1) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[5]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[5]);
 					}
 				}
 				else {
 					if (isWinState(plate, temp, BLACK, dir, 5) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[4]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[4]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 4) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[3]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[3]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 3) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[2]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[2]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 2) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[1]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[1]);
 					}
 					else if (isWinState(plate, temp, BLACK, dir, 1) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, weightList[0]);
+						addWeight(plate, temp, candidateWeight, dir, realWeightList[0]);
 					}
 
 					if (isWinState(plate, temp, WHITE, dir, 5) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[9]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[9]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 4) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[8]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[8]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 3) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[7]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[7]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 2) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[6]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[6]);
 					}
 					else if (isWinState(plate, temp, WHITE, dir, 1) == YES) {
-						addWeight(plate, temp, candidateWeight, dir, -1 * weightList[5]);
+						addWeight(plate, temp, candidateWeight, dir, -1 * realWeightList[5]);
 					}
 				}
 			}
@@ -157,6 +166,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 		}
 	}
 
+	// Cut - off non-useless candidate.
 	for (i = 0; i < candLimit; i++) {
 		if (isSevenStone(plate, candCord[i], turn) == YES) {
 			memmove(&candCord[i], &candCord[i + 1], sizeof(cord2D) * (candLimit - i - 1));
@@ -720,7 +730,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 	else {
 		switch (dir) {
 		case EAST:	// Y++
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x][temp.y + i] == EMPTY) {
 					next[count].x = temp.x;
 					next[count].y = temp.y + i;
@@ -730,7 +740,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			}
 			break;
 		case WEST:	// Y--
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x][temp.y - i] == EMPTY) {
 					next[count].x = temp.x;
 					next[count].y = temp.y - i;
@@ -740,7 +750,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			}
 			break;
 		case SOUTH:	// X++
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x + i][temp.y] == EMPTY) {
 					next[count].x = temp.x + i;
 					next[count].y = temp.y;
@@ -750,7 +760,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			}
 			break;
 		case NORTH: // X--
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x - i][temp.y] == EMPTY) {
 					next[count].x = temp.x - i;
 					next[count].y = temp.y;
@@ -761,7 +771,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			break;
 
 		case EAST_SOUTH:	// X++ y++
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x + i][temp.y + i] == EMPTY) {
 					next[count].x = temp.x + i;
 					next[count].y = temp.y + i;
@@ -771,7 +781,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			}
 			break;
 		case EAST_NORTH:	// X-- y++
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x - i][temp.y + i] == EMPTY) {
 					next[count].x = temp.x - i;
 					next[count].y = temp.y + i;
@@ -781,7 +791,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			}
 			break;
 		case WEST_SOUTH:	// X++ y--
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x + i][temp.y - i] == EMPTY) {
 					next[count].x = temp.x + i;
 					next[count].y = temp.y - i;
@@ -791,7 +801,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			}
 			break;
 		case WEST_NORTH:	// x-- y--
-			for (i = 1; i < 8; i++) {
+			for (i = 1; i < 7; i++) {
 				if (plate[temp.x - i][temp.y - i] == EMPTY) {
 					next[count].x = temp.x - i;
 					next[count].y = temp.y - i;
@@ -805,7 +815,13 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 		}
 	}
 	if (next[0].x != -1) {
-		put(plate, next[0], turn);
+		if (isSevenStone(plate, next[1], turn) == NO) {
+			put(plate, next[0], turn);
+		}
+		else {
+			printf("Seven Stone occured!\n");
+			system("pasue");
+		}
 	}
 	if (next[1].x != -1) {
 		if (isSevenStone(plate, next[1], turn) == NO) {
@@ -1360,7 +1376,7 @@ int isSpecialCase(char plate[][PLATE_MAX], cord2D temp, int dir, int turn) {
 	}
 }
 
-void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn)	{
+void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn, int nowTurn)	{
 	// Main AI. Return at next[2].
 	// Make candidate proper number ( 50 );
 	cord2D oppoCandCord[PLATE_MAX * PLATE_MAX], myCandCord[PLATE_MAX * PLATE_MAX];
@@ -1390,8 +1406,8 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	if (doNext == 1) {
 		// Do only 1.
 		// Calculate opposite turn`s highest plate.
-		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
+		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
+		minMax(plate, &next[0], temp, (int)(DEPTH_MAX / 5), -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
 		put(plate, next[0], turn);
 
 		return ;
@@ -1423,18 +1439,18 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 			doSheild(plate, temp, loseDir, &next[1], turn);
 		}
 		else {
-			getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
+			getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
 			put(plate, next[1], turn);
 		}
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
 		start = clock();
-		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
+		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
 		put(plate, next[0], turn);
 
-		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
+		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
 		put(plate, next[1], turn);
 		end = clock();

@@ -5,8 +5,9 @@ int main()	{
 	int turn = WHITE;
 	int i, blockNum;
 	cord2D nextPut[2], before[2];
-	int weightListB[10] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
-	int weightListW[10] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
+	int weightListB[20] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15, 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
+	int weightListW[20] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0, 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
+	int nowTurn = 1;
 
 	srand(time(NULL));
 	memset(nextPut, -1, sizeof(cord2D) * 2);
@@ -15,7 +16,7 @@ int main()	{
 	blockNum = 5;
 
 	initPlate(plate, blockNum);
-	sixthStoneBot(plate, nextPut, before, 1, weightListB, turn);
+	sixthStoneBot(plate, nextPut, before, 1, weightListB, turn, nowTurn++);
 
 	do {
 		changeTurn(&turn);
@@ -24,10 +25,10 @@ int main()	{
 //		system("pause");
 
 		if(turn == WHITE)	{
-			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn);
+			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn, nowTurn++);
 		}
 		else {
-			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn);
+			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn, nowTurn++);
 			
 			/*
 			for(i = 0; i < 2; i++)	{

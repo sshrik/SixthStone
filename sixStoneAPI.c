@@ -426,3 +426,21 @@ int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn) {
 
 	return result;
 }
+
+int getWinningStateNumber(char plate[][PLATE_MAX], int continum, int turn) {
+	// Get how many continum winning state.
+	int i, j, dir;
+	cord2D temp;
+	int count = 0;
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
+			temp.x = i;	temp.y = j;
+			for (dir = 1; dir <= 8; dir++) {
+				if (isWinState(plate, temp, turn, dir, continum) == YES)	count++;
+			}
+		}
+	}
+
+	return count;
+}
