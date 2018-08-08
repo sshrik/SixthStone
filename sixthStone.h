@@ -30,7 +30,7 @@
 #define NO -1
 #define YES 1
 
-#define DEPTH_MAX 10
+#define DEPTH_MAX 20
 
 typedef struct{
 	int x;
@@ -58,7 +58,7 @@ void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int 
 int isSpecialCase(char plate[][PLATE_MAX], cord2D temp, int dir, int turn);
 void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int doNext, int * weightList, int turn);
 void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int turn);
-int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, bool isMaximizingPlayer, int tempCandidateWeight[][PLATE_MAX], int *weightList, int turnInTree, int turnCount, int myRealTurn, bool isRoot);
+int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, int alpha, int beta, bool isMaximizingPlayer, cord2D *before, int tempCandidateWeight[][PLATE_MAX], int *weightList, int turnInTree, int turnCount, int myRealTurn, bool isRoot);
 
 int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn);
 

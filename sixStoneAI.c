@@ -1418,7 +1418,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 
 
 			getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
-			minMax(plate, &next[1], temp, DEPTH_MAX - 1, true, candidateWeight, weightList, turn, 1, WHITE, true);
+			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
 			put(plate, next[1], turn);
 		}
 	}
@@ -1503,11 +1503,11 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 
 		start = clock();
 		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, DEPTH_MAX, true, candidateWeight, weightList, turn, 2, WHITE, true);
+		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
 		put(plate, next[0], turn);
 
 		getCandidate(plate, candidateWeight, myCandCord, before, 2, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[1], temp, DEPTH_MAX - 1, true, candidateWeight, weightList, turn, 1, WHITE, true);
+		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
 		put(plate, next[1], turn);
 		end = clock();
 
