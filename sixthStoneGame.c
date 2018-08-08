@@ -1,8 +1,9 @@
+/*
 #include "sixthStone.h"
 
 int main()	{
 	char plate[PLATE_MAX][PLATE_MAX];
-	int turn = WHITE;
+	int turn = BLACK;
 	int i, blockNum;
 	cord2D nextPut[2], before[2];
 	int weightListB[20] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15, 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
@@ -30,25 +31,60 @@ int main()	{
 		else {
 			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn, nowTurn++);
 			
-			/*
-			for(i = 0; i < 2; i++)	{
-				scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
-				while(canPut(plate, nextPut[i], turn) == NO)	{
-					printf("%c[1;%dm", 27, 31);
-					printf("You can`t put there.\n");
-					printf("%c[0m",27);
-					scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
-				}
-				put(plate, nextPut[i], turn);
-				display(plate);
-			}
-			*/
 		}
 		memcpy(before, nextPut, sizeof(cord2D) * 2);
+		if (allWhoWin(plate) == EMPTY) {
+			break;
+		}
 	}	while(allWhoWin(plate) == NO);
 	display(plate);
 	if(turn == WHITE) printf("White Win!\n");
 	else printf("Black Win!\n");
+	system("pause");
+
+	return 0;
+}
+*/
+
+#include "genetic.h"
+#include "sixthStone.h"
+
+int main() {
+	int par[PARENT_MAX][GEN_LENGTH], child[GENERATION_MAX][GEN_LENGTH];
+	char log[5000];
+	int i, j, logB, profitIndex, count = 0;
+
+	srand(time(NULL));
+	initGen(child);
+
+	while (1) {
+		// Init for log.
+		memset(log, 0x00, sizeof(char) * 5000);
+		logB = 0;
+
+		logB = sprintf(log + logB, "%d th generation now proceeding...\n", count);
+		makeLog(log);
+
+		printf("%d th generation now proceeding...\n", count++);
+		choosePar(child, par);
+		makeChild(par, child);
+
+		for (i = 0; i < GENERATION_MAX; i++) {
+			makeMutate(child[i]);
+		}
+
+		printf("profit parent : [ ");
+		for (i = 0; i < GEN_LENGTH; i++) {
+			printf("%2d  ", par[0][i]);
+		}
+		printf("]\n");
+	}
+
+	printf("profit child : [ ");
+	for (i = 0; i < GEN_LENGTH; i++) {
+		printf("%2d  ", child[profitIndex][i]);
+	}
+	printf("]\n");
 	system("pause");
 
 	return 0;

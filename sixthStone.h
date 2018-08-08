@@ -30,8 +30,8 @@
 #define NO -1
 #define YES 1
 
-#define DEPTH_MAX 20
-#define CAND_MAX 4
+#define DEPTH_MAX 10
+#define CAND_MAX 2
 #define WINSTATE_MAX 16
 
 typedef struct{
@@ -64,5 +64,5 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 
 int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn);
 int getWinningStateNumber(char plate[][PLATE_MAX], int continum, int turn);
-
+int doGame(int * weightListW, int * weightListB);
 #endif

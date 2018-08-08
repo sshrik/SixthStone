@@ -163,7 +163,7 @@ void display(char plate[][PLATE_MAX])	{
 }
 
 int allWhoWin(char plate[][PLATE_MAX]) {
-	int i, j;
+	int i, j, count = 0;
 	cord2D temp[2];
 	char cPlate[PLATE_MAX][PLATE_MAX];
 
@@ -189,8 +189,9 @@ int allWhoWin(char plate[][PLATE_MAX]) {
 				return cPlate[i][j];
 			}
 		}
+		if (cPlate[i][j] != EMPTY) count++;
 	}
-
+	if (count == PLATE_MAX * PLATE_MAX) return EMPTY;
 	return NO;
 }
 
@@ -443,4 +444,48 @@ int getWinningStateNumber(char plate[][PLATE_MAX], int continum, int turn) {
 	}
 
 	return count;
+}
+
+int doGame(int * weightListW, int * weightListB) {
+	int win = NO;
+	int turn = BLACK;
+	int nowTurn = 1;
+	cord2D nextPut[2], before[2];
+	char plate[PLATE_MAX][PLATE_MAX];
+	int blockNum = 5;
+
+	srand(time(NULL));
+
+	memset(nextPut, -1, sizeof(cord2D) * 2);
+	memset(before, 0x09, sizeof(cord2D) * 2);
+
+	initPlate(plate, blockNum);
+	sixthStoneBot(plate, nextPut, before, 1, weightListB, turn, nowTurn++);
+
+	do {
+		changeTurn(&turn);
+		if (turn == WHITE) {
+			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn, nowTurn++);
+		}
+		else {
+			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn, nowTurn++);
+		}
+		memcpy(before, nextPut, sizeof(cord2D) * 2);
+		if (allWhoWin(plate) == EMPTY) {
+			win == EMPTY;
+			break;
+		}
+	} while (allWhoWin(plate) == NO);
+
+	if (win == EMPTY) {
+		// Do nothing.
+	}
+	else if (turn == WHITE) {
+		win = WHITE;
+	}
+	else if(turn == BLACK){
+		win = BLACK;
+	}
+
+	return win;
 }

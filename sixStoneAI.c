@@ -178,7 +178,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 	}
 	
 	for (i = 1; i < candNum; i++) {
-		if (candWeightList[i] * 100 < candWeightList[0] * 85) {
+		if (candWeightList[i] * 100 < candWeightList[0] * 80) {
 			memmove(&candCord[i], &candCord[i + 1], sizeof(cord2D) * (candLimit - i - 1));
 			memmove(&candWeightList[i], &candWeightList[i + 1], sizeof(int) * (candLimit - i));
 			memmove(&candLengthList[i], &candLengthList[i + 1], sizeof(int) * (candLimit - i));
@@ -819,8 +819,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			put(plate, next[0], turn);
 		}
 		else {
-			printf("Seven Stone occured!\n");
-			system("pasue");
+			//
 		}
 	}
 	if (next[1].x != -1) {
@@ -828,8 +827,7 @@ void doWin(char plate[][PLATE_MAX], cord2D temp , int dir, cord2D * next, int tu
 			put(plate, next[1], turn);
 		}
 		else {
-			printf("Seven Stone occured!\n");
-			system("pasue");
+			//
 		}
 	}
 }
@@ -1387,7 +1385,6 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	int i, oppo, index[2], loseDir, count = 0;
 	int candidateWeight[PLATE_MAX][PLATE_MAX];
 	long long int oppoWeight, myWeight, highestWeight = 0;
-	clock_t start, end;
 
 	// turn mean my color, oppo mean other`s color.
 	if(turn == BLACK) oppo = WHITE;
@@ -1415,15 +1412,10 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 
 	//Search in case we can win.
 	if((loseDir = getWinState(mPlate, &temp, turn)) != NO) {
-		printf("Winning State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
-		system("pause");
 		doWin(plate, temp, loseDir, next, turn);
 	}
 	else if((loseDir = getWinState(oPlate, &temp, oppo)) != NO){
-		printf("Losing State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
-		system("pause");
 		doSheild(plate, temp, loseDir, &next[0], turn);
-		printf("Sheild at %d, %d\n", next[0].x, next[0].y);
 	}
 
 	// Init temp - plate.
@@ -1433,8 +1425,6 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	if (next[1].x == -1 && next[0].x != -1) {
 		// Check if is there any other lose state.
 		if ((loseDir = getWinState(oPlate, &temp, oppo)) != NO) {
-			printf("Losing State find at (%d, %d) with dir %d at turn %c.\n", temp.x, temp.y, loseDir, turn);
-			system("pause");
 			// In this case, next[0] will using twice.
 			doSheild(plate, temp, loseDir, &next[1], turn);
 		}
@@ -1445,7 +1435,6 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		}
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
-		start = clock();
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
 		put(plate, next[0], turn);
@@ -1453,9 +1442,5 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
 		put(plate, next[1], turn);
-		end = clock();
-
-		printf("%.3lf sec.\n", ((double)(end-start) / (double)1000));
-		system("pause");
 	}
 }
