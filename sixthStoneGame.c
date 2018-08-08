@@ -10,7 +10,7 @@ int main()	{
 
 	srand(time(NULL));
 	memset(nextPut, -1, sizeof(cord2D) * 2);
-	memset(before, 0x10, sizeof(cord2D) * 2);
+	memset(before, 0x09, sizeof(cord2D) * 2);
 
 	blockNum = 5;
 

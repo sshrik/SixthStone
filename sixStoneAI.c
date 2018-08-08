@@ -152,6 +152,14 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 		}
 	}
 
+	for (i = 0; i < candLimit; i++) {
+		if (isSevenStone(plate, candCord[i], turn) == YES) {
+			memmove(&candCord[i + 1], &candCord[i], sizeof(cord2D) * (candLimit - i - 1));
+			i--;
+		}
+	}
+
+
 	free(candLengthList);
 	free(candWeightList);
 	
