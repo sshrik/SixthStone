@@ -100,13 +100,13 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 		}
 	}
 
-	// Calc candidate with given limit number.
+	// Calc candidate and sort with given limit number / candidate weight.
 	for (i = 0; i < PLATE_MAX; i++) {
 		for (j = 0; j < PLATE_MAX; j++) {
 			if (plate[i][j] != EMPTY) continue;
 			temp.x = i;
 			temp.y = j;
-			for (k = 0; k < candLimit; k++) {
+			for (k = 0; k < candLimit - 1; k++) {
 				if (candCord[k].x == -1) {
 					// If candCord have another room...
 					memcpy(&candCord[k], &temp, sizeof(cord2D));
@@ -115,9 +115,9 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 					break;
 				}
 				else if(candWeightList[k] < candidateWeight[i][j]){
-					memmove(&candWeightList[k + 1], &candWeightList[k], sizeof(cord2D) * (candLimit - k - 1));
+					memmove(&candWeightList[k + 1], &candWeightList[k], sizeof(int) * (candLimit - k - 1));
 					memmove(&candCord[k + 1], &candCord[k], sizeof(cord2D) * (candLimit - k - 1));
-					memmove(&candLengthList[k + 1], &candLengthList[k], sizeof(cord2D) * (candLimit - k - 1));
+					memmove(&candLengthList[k + 1], &candLengthList[k], sizeof(int) * (candLimit - k - 1));
 
 					memcpy(&candCord[k], &temp, sizeof(cord2D));
 					candWeightList[k] = candidateWeight[i][j];
@@ -126,24 +126,24 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 				}
 				else {
 					if (candWeightList[k] >= candidateWeight[i][j] && candWeightList[k + 1] < candidateWeight[i][j] && candCord[k + 1].x != -1) {
-						memmove(&candWeightList[k + 1], &candWeightList[k], sizeof(cord2D) * (candLimit - k - 1));
-						memmove(&candCord[k + 1], &candCord[k], sizeof(cord2D) * (candLimit - k - 1));
-						memmove(&candLengthList[k + 1], &candLengthList[k], sizeof(cord2D) * (candLimit - k - 1));
+						memmove(&candWeightList[k + 2], &candWeightList[k + 1], sizeof(int) * (candLimit - k - 2));
+						memmove(&candCord[k + 2], &candCord[k + 1], sizeof(cord2D) * (candLimit - k - 2));
+						memmove(&candLengthList[k + 2], &candLengthList[k + 1], sizeof(int) * (candLimit - k - 2));
 
-						memcpy(&candCord[k], &temp, sizeof(cord2D));
-						candWeightList[k] = candidateWeight[i][j];
-						candLengthList[k] = getLength(temp, before[0]) + getLength(temp, before[1]);
+						memcpy(&candCord[k + 1], &temp, sizeof(cord2D));
+						candWeightList[k + 1] = candidateWeight[i][j];
+						candLengthList[k + 1] = getLength(temp, before[0]) + getLength(temp, before[1]);
 						break;
 					}
 					else if (candWeightList[k] >= candidateWeight[i][j] && candWeightList[k + 1] == candidateWeight[i][j] && candCord[k + 1].x != -1) {
 						if (candLengthList[k] >= getLength(temp, before[0]) + getLength(temp, before[1])) {
-							memmove(&candWeightList[k + 1], &candWeightList[k], sizeof(cord2D) * (candLimit - k - 1));
-							memmove(&candCord[k + 1], &candCord[k], sizeof(cord2D) * (candLimit - k - 1));
-							memmove(&candLengthList[k + 1], &candLengthList[k], sizeof(cord2D) * (candLimit - k - 1));
+							memmove(&candWeightList[k + 2], &candWeightList[k + 1], sizeof(int) * (candLimit - k - 2));
+							memmove(&candCord[k + 2], &candCord[k + 1], sizeof(cord2D) * (candLimit - k - 2));
+							memmove(&candLengthList[k + 2], &candLengthList[k + 1], sizeof(int) * (candLimit - k - 2));
 
-							memcpy(&candCord[k], &temp, sizeof(cord2D));
-							candWeightList[k] = candidateWeight[i][j];
-							candLengthList[k] = getLength(temp, before[0]) + getLength(temp, before[1]);
+							memcpy(&candCord[k + 1], &temp, sizeof(cord2D));
+							candWeightList[k + 1] = candidateWeight[i][j];
+							candLengthList[k + 1] = getLength(temp, before[0]) + getLength(temp, before[1]);
 							break;
 						}
 					}
@@ -151,11 +151,6 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			}
 		}
 	}
-
-	for (i = 0; i < candLimit; i++) {
-		printf("%d ", candWeightList[i]);
-	}
-	printf("\n");
 
 	free(candLengthList);
 	free(candWeightList);
@@ -1422,12 +1417,10 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		}
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
-		if (turn == BLACK) {
 			// Calculate opposite turn`s highest plate.
 			oppoCandNum = getCandidate(oPlate, candidateWeight, oppoCandCord, before, 20, weightList, oppo);
 			oppoWeight = calcWeight(candidateWeight);
 
-<<<<<<< HEAD
 		for(i = 0; i < oppoCandNum; i++)	{
 			memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 			tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
@@ -1438,13 +1431,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 				index[0] = i;
 			}
 		}
-		
-		for (i = 0; i < 20; i++) {
-			printf("Candidate[%d] = (%d, %d) weight : %d at turn %c,\n", i, oppoCandCord[i].x, oppoCandCord[i].y, candidateWeight[oppoCandCord[i].x][oppoCandCord[i].y], turn);
-		}
-		printf("Real Candidate[%d] = (%d, %d) weight : %d at turn %c,\n", index[0], oppoCandCord[index[0]].x, oppoCandCord[index[0]].y, candidateWeight[oppoCandCord[index[0]].x][oppoCandCord[index[0]].y], turn);
-		system("pause");
-		
+
 		next[0].x = oppoCandCord[index[0]].x;
 		next[0].y = oppoCandCord[index[0]].y;
 	
@@ -1473,7 +1460,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		next[1].x = oppoCandCord[index[1]].x;
 		next[1].y = oppoCandCord[index[1]].y;
 		put(plate, next[1], turn);
-=======
+
 			for (i = 0; i < oppoCandNum; i++) {
 				memcpy(tempPlate, mPlate, sizeof(char) * PLATE_MAX * PLATE_MAX);
 				tempPlate[oppoCandCord[i].x][oppoCandCord[i].y] = turn;
@@ -1506,24 +1493,5 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 			next[1].x = oppoCandCord[index[1]].x;
 			next[1].y = oppoCandCord[index[1]].y;
 			put(plate, next[1], turn);
-		}
-		else {
-			printf("stop1\n");
-			system("pause");
-			getCandidate(plate, candidateWeight, myCandCord, before, 1, weightList, turn);//to get candidateWeight
-			minMax(plate, next, temp, DEPTH_MAX, true, candidateWeight, weightList, turn, 2, WHITE, true);
-			put(plate, *next, turn);
-			printf("tree finished with coordinate (%d, %d)\n", next->x, next->y);
-			system("pause");
-
-			printf("stop2\n");
-			system("pause");
-			getCandidate(plate, candidateWeight, myCandCord, before, 1, weightList, turn);//to get candidateWeight
-			minMax(plate, next, temp, DEPTH_MAX - 1, true, candidateWeight, weightList, turn, 1, WHITE, true);
-			put(plate, *next, turn);
-			printf("tree finished with coordinate (%d, %d)\n", next->x, next->y);
-			system("pause");
-		}
->>>>>>> origin/feature_applying
 	}
 }
