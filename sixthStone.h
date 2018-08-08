@@ -31,6 +31,7 @@
 #define YES 1
 
 #define DEPTH_MAX 20
+#define CAND_MAX 4
 
 typedef struct{
 	int x;

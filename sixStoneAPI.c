@@ -354,7 +354,7 @@ void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int 
 int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn) {
 	// If do at cord location with turn`th turn, does occured seven stone?
 	int i, j, k, dir;
-	int result = YES;
+	int result = NO;
 
 	cord2D temp;
 
@@ -369,61 +369,53 @@ int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn) {
 				switch (dir) {
 					case EAST:
 						for (i = 0; i < 7; i++) {
-							if (plate[j][k + i] != turn) {
-								result = NO;
-							}
+							if (plate[j][k + i] != turn) break;
 						}
+						if(i == 8)	result = YES;
 						break;
 					case WEST:
 						for (i = 0; i < 7; i++) {
-							if (plate[j][k - i] != turn) {
-								result = NO;
-							}
+							if (plate[j][k - i] != turn)  break;
 						}
+						if (i == 8)	result = YES;
 						break;
 					case SOUTH:
 						for (i = 0; i < 7; i++) {
-							if (plate[j + i][k] != turn) {
-								result = NO;
-							}
+							if (plate[j + i][k] != turn) break;
 						}
+						if (i == 8)	result = YES;
 						break;
 					case NORTH:
 						for (i = 0; i < 7; i++) {
-							if (plate[j - i][k] != turn) {
-								result = NO;
-							}
+							if (plate[j - i][k] != turn)  break;
 						}
+						if (i == 8)	result = YES;
 						break;
 
 
 					case EAST_SOUTH:
 						for (i = 0; i < 7; i++) {
-							if (plate[j + i][k + i] != turn) {
-								result = NO;
-							}
+							if (plate[j + i][k + i] != turn) break;
 						}
+						if (i == 8)	result = YES;
 						break;
 					case EAST_NORTH:
 						for (i = 0; i < 7; i++) {
-							if (plate[j - i][k + i] != turn) {
-								result = NO;
-							}
+							if (plate[j - i][k + i] != turn)  break;
 						}
+						if (i == 8)	result = YES;
 						break;
 					case WEST_SOUTH:
 						for (i = 0; i < 7; i++) {
-							if (plate[j + i][k - i] != turn) {
-								result = NO;
-							}
+							if (plate[j + i][k - i] != turn)  break;
 						}
+						if (i == 8)	result = YES;
 						break;
 					case WEST_NORTH:
 						for (i = 0; i < 7; i++) {
-							if (plate[j - i][k - i] != turn) {
-								result = NO;
-							}
+							if (plate[j - i][k - i] != turn)  break;
 						}
+						if (i == 8)	result = YES;
 						break;
 				}
 			}
