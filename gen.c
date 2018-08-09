@@ -105,7 +105,7 @@ void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]) {
 				printf("\n");
 				for (game = 0; game < GAME_MAX; game++) {
 					printf("#");
-					win = doGame(&gen[i], &gen[j]);
+					win = doGame(gen[i], gen[j]);
 					if (win == WHITE) winPlate[i][j]++;
 					else if(win == BLACK) winPlate[j][i]++;
 				}
