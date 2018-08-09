@@ -104,6 +104,9 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 		for (j = 0; j < PLATE_MAX; j++) {
 			temp.x = i;
 			temp.y = j;
+			if (i < 5 || i>14 || j < 5 || j>14) {
+				candidateWeight[i][j] -= 2;//tempNumber
+			}
 			if (canPut(plate, temp, turn) == YES) {
 				candidateWeight[i][j] += getCandWeight(plate, temp, turn);
 			}
@@ -1406,9 +1409,6 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[0], temp, 4, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
-		printf("(%d, %d)", next[0].x, next[0].y);
-		system("pause");
-
 		return ;
 	}
 
@@ -1440,15 +1440,15 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
-		printf("(%d, %d)", next[0].x, next[0].y);
-		system("pause");
+		//printf("(%d, %d)", next[0].x, next[0].y);
+		//system("pause");
 
 		temp.x = 0;
 		temp.y = 0;
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, turn, true);
 		put(plate, next[1], turn);
-		printf("(%d, %d) \n", next[1].x, next[1].y);
-		system("pause");
+		//printf("(%d, %d) \n", next[1].x, next[1].y);
+		//system("pause");
 	}
 }
