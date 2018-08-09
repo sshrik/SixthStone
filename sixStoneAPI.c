@@ -8,8 +8,9 @@ void display(char plate[][PLATE_MAX])	{
 	int i, j, candidateNum = 0;
 	int maxWeight = -1;
 	int turn, tPlate[PLATE_MAX][PLATE_MAX];
-	int weightListB[20] = { 1, 3, 6, 700, 900, 1, 3, 6, 300, 500, 1, 3, 6, 700, 900, 1, 3, 6, 300, 500 };
-	int weightListW[20] = { 1, 3, 6, 200, 300, 0, 0, 0, 50, 100, 1, 3, 6, 200, 300, 0, 0, 0, 50, 100 };
+	int weightListB[20] = { 1, 700, 300, 500, 900, 1, -500, -200, -300, -500, 1, 3, 700, 500, 900, 1, 3, -200, -300, -500 };
+	int weightListW[20] = { 1, 700, 300, 500, 900, 1, -500, -200, -300, -500, 1, 3, 700, 500, 900, 1, 3, -200, -300, -500 }; 
+	//int weightListW[20] = { 1, 3, 6, 200, 300, 0, 0, 0, 50, 100, 1, 3, 6, 200, 300, 0, 0, 0, 50, 100 };
 	cord2D temp;
 	cord2D candCord[PLATE_MAX * PLATE_MAX];
 	cord2D before[2];
@@ -21,7 +22,6 @@ void display(char plate[][PLATE_MAX])	{
 	// Printf with color.
 	// 30 default	31 Bright Red	32 Green	33 Yellow	34 Blue	35 Violet	36 Bright Blue	37 Bright White
 
-	/*
 	printf("%c[1;%dm",27, 37);
 	printf("*\t");
 	printf("%c[0m",27);
@@ -31,7 +31,7 @@ void display(char plate[][PLATE_MAX])	{
 		printf("%c[0m",27); 
 	}
 	printf("\n");
-
+	/*
 	for (i = 0; i < PLATE_MAX; i++) {
 		printf("%c[1;%dm", 27, 37);
 		printf("%d\t", i);
@@ -63,8 +63,8 @@ void display(char plate[][PLATE_MAX])	{
 			}
 		}
 		printf("\n");
-	}*/
-	
+	}
+	*/
 	turn = WHITE;
 
 	changeBlocking(plate, tPlate, turn);
