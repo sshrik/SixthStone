@@ -6,8 +6,8 @@ int main()	{
 	int turn = BLACK;
 	int i, blockNum;
 	cord2D nextPut[2], before[2];
-	int weightListB[20] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15, 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
-	int weightListW[20] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0, 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
+	int weightListB[20] = { 1, 3, 6, 700, 900, 1, 3, 6, 300, 500, 1, 3, 6, 700, 900, 1, 3, 6, 300, 500 };
+	int weightListW[20] = { 1, 3, 6, 200, 300, 0, 0, 0, 50, 100, 1, 3, 6, 200, 300, 0, 0, 0, 50, 100 };
 	int nowTurn = 1;
 
 	srand(time(NULL));

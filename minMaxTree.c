@@ -22,8 +22,10 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 	if (--turnCount < 0) {
 		isMaximizingPlayer = isMaximizingPlayer ? false : true;
 		turnInTree = oppoTurn;
+		oppoTurn = turnInTree == WHITE ? BLACK : WHITE;
 		turnCount = 1;
 	}
+	printf("turnCount : %d\n", turnCount);
 
 	changeBlocking(tempPlate, changedPlate, turnInTree);
 	if (depth == 0) {
@@ -36,7 +38,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 	//Search in case we can win.(내 턴이 2개 남았을 때)
 	if ((turnCount > 0) && (loseDir = getWinState(changedPlate, &cord, turnInTree) != NO)) {
 		if (turnInTree == myRealTurn) {
-			printf("내가 (%d, %d)여기서 찾을 수 있는 방향의 공격지점에 둬서 이겼을 때 - depth : %d\n",cord.x, cord.y, depth);
+			printf("내가 (%d, %d)여기서 찾을 수 있는 방향의 공격지점에 둬서 이겼을 때 - depth : %d\n", cord.x, cord.y, depth);
 			return WIN_WEIGHT;
 		}
 		else {
@@ -49,7 +51,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 	if ((loseDir = getWinState(changedPlate, &cord, oppoTurn)) != NO) {
 		doSheild(changedPlate, cord, loseDir, &candCord[0], turnInTree);
 		put(tempPlate, candCord[0], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
-		printf("depth가 %d 일 때 (%d, %d)에 방어를 했을 때. 내 turn : %c\n", depth, candCord[0].x, candCord[0].y , turnInTree);
+		printf("depth가 %d 일 때 (%d, %d)에 방어를 했을 때. 내 turn : %c\n", depth, candCord[0].x, candCord[0].y, turnInTree);
 		temp = minMax(tempPlate, next, candCord[0], depth - 1, alpha, beta, isMaximizingPlayer, before, tempCandidateWeight, weightList, turnInTree, turnCount, myRealTurn, false);
 
 		if (isRoot) {
@@ -57,7 +59,6 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 			next->y = candCord[0].y;
 		}
 		return temp;
-
 	}
 	else {
 		changeBlocking(tempPlate, changedPlate, turnInTree);

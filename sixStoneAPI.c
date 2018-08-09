@@ -8,8 +8,8 @@ void display(char plate[][PLATE_MAX])	{
 	int i, j, candidateNum = 0;
 	int maxWeight = -1;
 	int turn, tPlate[PLATE_MAX][PLATE_MAX];
-	int weightListB[10] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
-	int weightListW[10] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
+	int weightListB[20] = { 1, 3, 6, 700, 900, 1, 3, 6, 300, 500, 1, 3, 6, 700, 900, 1, 3, 6, 300, 500 };
+	int weightListW[20] = { 1, 3, 6, 200, 300, 0, 0, 0, 50, 100, 1, 3, 6, 200, 300, 0, 0, 0, 50, 100 };
 	cord2D temp;
 	cord2D candCord[PLATE_MAX * PLATE_MAX];
 	cord2D before[2];
