@@ -8,8 +8,13 @@ void display(char plate[][PLATE_MAX])	{
 	int i, j, candidateNum = 0;
 	int maxWeight = -1;
 	int turn, tPlate[PLATE_MAX][PLATE_MAX];
+	int weightListB[10] = { 1, 3, 6, 700, 900, 1, 3, 6, 10, 15 };
+	int weightListW[10] = { 1, 3, 6, 200, 300, 0, 0, 0, 0, 0 };
 	cord2D temp;
 	cord2D candCord[PLATE_MAX * PLATE_MAX];
+	cord2D before[2];
+
+	memset(before, 0x10, sizeof(cord2D) * 2);
 
 	system("cls");
 
@@ -63,7 +68,7 @@ void display(char plate[][PLATE_MAX])	{
 	turn = WHITE;
 
 	changeBlocking(plate, tPlate, turn);
-	candidateNum = getCandidate(tPlate, candidateWeight, candCord, turn);
+	candidateNum = getCandidate(tPlate, candidateWeight, candCord, before, 20, weightListW, turn);
 	printf("%c[1;%dm", 27, 37);
 	printf("*\t");
 	printf("%c[0m", 27);
@@ -111,7 +116,7 @@ void display(char plate[][PLATE_MAX])	{
 	turn = BLACK;
 
 	changeBlocking(plate, tPlate, turn);
-	candidateNum = getCandidate(tPlate, candidateWeight, candCord, turn);
+	candidateNum = getCandidate(tPlate, candidateWeight, candCord, before, 20, weightListB, turn);
 	printf("%c[1;%dm", 27, 37);
 	printf("*\t");
 	printf("%c[0m", 27);
@@ -158,7 +163,7 @@ void display(char plate[][PLATE_MAX])	{
 }
 
 int allWhoWin(char plate[][PLATE_MAX]) {
-	int i, j;
+	int i, j, count = 0;
 	cord2D temp[2];
 	char cPlate[PLATE_MAX][PLATE_MAX];
 
@@ -184,8 +189,9 @@ int allWhoWin(char plate[][PLATE_MAX]) {
 				return cPlate[i][j];
 			}
 		}
+		if (cPlate[i][j] != EMPTY) count++;
 	}
-
+	if (count == PLATE_MAX * PLATE_MAX) return EMPTY;
 	return NO;
 }
 
@@ -344,4 +350,142 @@ void changeBlocking(char plate[][PLATE_MAX], char changePlate[][PLATE_MAX], int 
 			changePlate[i][j] = plate[i][j] == BLOCK ? turn : plate[i][j];
 		}
 	}
+}
+
+int isSevenStone(char plate[][PLATE_MAX], cord2D cord, int turn) {
+	// If do at cord location with turn`th turn, does occured seven stone?
+	int i, j, k, dir;
+	int result = NO;
+
+	cord2D temp;
+
+	plate[cord.x][cord.y] = turn;
+
+	for (j = 0; j < PLATE_MAX; j++) {
+		for (k = 0; k < PLATE_MAX; k++) {
+			temp.x = j;
+			temp.y = k;
+			for(dir = 1; dir <= 8; dir++)	{
+				isOutOfPlate(temp, 7, dir);
+				switch (dir) {
+					case EAST:
+						for (i = 0; i < 7; i++) {
+							if (plate[j][k + i] != turn) break;
+						}
+						if(i == 8)	result = YES;
+						break;
+					case WEST:
+						for (i = 0; i < 7; i++) {
+							if (plate[j][k - i] != turn)  break;
+						}
+						if (i == 8)	result = YES;
+						break;
+					case SOUTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j + i][k] != turn) break;
+						}
+						if (i == 8)	result = YES;
+						break;
+					case NORTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j - i][k] != turn)  break;
+						}
+						if (i == 8)	result = YES;
+						break;
+
+
+					case EAST_SOUTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j + i][k + i] != turn) break;
+						}
+						if (i == 8)	result = YES;
+						break;
+					case EAST_NORTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j - i][k + i] != turn)  break;
+						}
+						if (i == 8)	result = YES;
+						break;
+					case WEST_SOUTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j + i][k - i] != turn)  break;
+						}
+						if (i == 8)	result = YES;
+						break;
+					case WEST_NORTH:
+						for (i = 0; i < 7; i++) {
+							if (plate[j - i][k - i] != turn)  break;
+						}
+						if (i == 8)	result = YES;
+						break;
+				}
+			}
+		}
+	}
+
+	plate[cord.x][cord.y] = EMPTY;
+
+	return result;
+}
+
+int getWinningStateNumber(char plate[][PLATE_MAX], int continum, int turn) {
+	// Get how many continum winning state.
+	int i, j, dir;
+	cord2D temp;
+	int count = 0;
+
+	for (i = 0; i < PLATE_MAX; i++) {
+		for (j = 0; j < PLATE_MAX; j++) {
+			temp.x = i;	temp.y = j;
+			for (dir = 1; dir <= 8; dir++) {
+				if (isWinState(plate, temp, turn, dir, continum) == YES)	count++;
+			}
+		}
+	}
+
+	return count;
+}
+
+int doGame(int * weightListW, int * weightListB) {
+	int win = NO;
+	int turn = BLACK;
+	int nowTurn = 1;
+	cord2D nextPut[2], before[2];
+	char plate[PLATE_MAX][PLATE_MAX];
+	int blockNum = 5;
+
+	srand(time(NULL));
+
+	memset(nextPut, -1, sizeof(cord2D) * 2);
+	memset(before, 0x09, sizeof(cord2D) * 2);
+
+	initPlate(plate, blockNum);
+	sixthStoneBot(plate, nextPut, before, 1, weightListB, turn, nowTurn++);
+
+	do {
+		changeTurn(&turn);
+		if (turn == WHITE) {
+			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn, nowTurn++);
+		}
+		else {
+			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn, nowTurn++);
+		}
+		memcpy(before, nextPut, sizeof(cord2D) * 2);
+		if (allWhoWin(plate) == EMPTY) {
+			win == EMPTY;
+			break;
+		}
+	} while (allWhoWin(plate) == NO);
+
+	if (win == EMPTY) {
+		// Do nothing.
+	}
+	else if (turn == WHITE) {
+		win = WHITE;
+	}
+	else if(turn == BLACK){
+		win = BLACK;
+	}
+
+	return win;
 }
