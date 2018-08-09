@@ -1404,8 +1404,10 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		// Do only 1.
 		// Calculate opposite turn`s highest plate.
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, 4, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
+		minMax(plate, &next[0], temp, 4, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
+		printf("(%d, %d)", next[0].x, next[0].y);
+		system("pause");
 
 		return ;
 	}
@@ -1430,17 +1432,23 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		}
 		else {
 			getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
+			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, turn, true);
 			put(plate, next[1], turn);
 		}
 	}
 	else if(next[1].x == -1 && next[0].x == -1 ){	
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
+		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
+		printf("(%d, %d)", next[0].x, next[0].y);
+		system("pause");
 
+		temp.x = 0;
+		temp.y = 0;
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
+		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, turn, true);
 		put(plate, next[1], turn);
+		printf("(%d, %d) \n", next[1].x, next[1].y);
+		system("pause");
 	}
 }

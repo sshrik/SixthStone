@@ -33,6 +33,7 @@
 #define DEPTH_MAX 10
 #define CAND_MAX 2
 #define WINSTATE_MAX 16
+#define WIN_WEIGHT 99999
 
 typedef struct{
 	int x;

@@ -21,10 +21,10 @@ void display(char plate[][PLATE_MAX])	{
 	// Printf with color.
 	// 30 default	31 Bright Red	32 Green	33 Yellow	34 Blue	35 Violet	36 Bright Blue	37 Bright White
 
+	/*
 	printf("%c[1;%dm",27, 37);
 	printf("*\t");
 	printf("%c[0m",27);
-
 	for(j = 0; j < PLATE_MAX; j++) {
 		printf("%c[1;%dm", 27, 37);
 		printf("%d\t", j);
@@ -63,8 +63,8 @@ void display(char plate[][PLATE_MAX])	{
 			}
 		}
 		printf("\n");
-	}
-	/*
+	}*/
+	
 	turn = WHITE;
 
 	changeBlocking(plate, tPlate, turn);
@@ -159,7 +159,7 @@ void display(char plate[][PLATE_MAX])	{
 			}
 		}
 		printf("\n");
-	}*/
+	}
 }
 
 int allWhoWin(char plate[][PLATE_MAX]) {
