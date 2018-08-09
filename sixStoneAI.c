@@ -1404,7 +1404,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		// Do only 1.
 		// Calculate opposite turn`s highest plate.
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, (int)(DEPTH_MAX / 5), -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
+		minMax(plate, &next[0], temp, 4, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
 		put(plate, next[0], turn);
 
 		return ;

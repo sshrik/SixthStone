@@ -81,7 +81,8 @@ void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]) {
 	int logB = 0;
 	int winPlate[GENERATION_MAX][GENERATION_MAX];
 	// winPlate[i][j] mean weightList[i]`s ( == gen[i]`s ) win game number oppose to weightList[j] ( == gen[j]`s ).
-	int genProfit[GENERATION_MAX], index[GENERATION_MAX];
+	float genProfit[GENERATION_MAX];
+	int index[GENERATION_MAX];
 	char log[5000];
 
 	memset(winPlate, 0x00, sizeof(int) * GENERATION_MAX * GENERATION_MAX);
@@ -113,6 +114,7 @@ void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]) {
 		}
 	}
 
+	printf("Getting winning count...\n");
 	for (i = 0; i < GENERATION_MAX; i++) {
 		genProfit[i] = getWinRate(winPlate, i);
 		index[i] = i;
@@ -120,7 +122,7 @@ void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]) {
 
 	for (i = 0; i < GENERATION_MAX; i++) {
 		for (j = i + 1; j < GENERATION_MAX; j++) {
-			if (genProfit[i] > genProfit[j]) {
+			if (genProfit[i] < genProfit[j]) {
 				temp = genProfit[i];
 				genProfit[i] = genProfit[j];
 				genProfit[j] = temp;
@@ -132,11 +134,13 @@ void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]) {
 		}
 	}
 
+	printf("Getting copying now step1...\n");
 	for (i = 0; i < PARENT_MAX / 2; i++) {
 		memcpy(par[i], gen[index[i]], sizeof(int) * GEN_LENGTH);
 	}
 	k = 0;
 
+	printf("Getting copying now step2...\n");
 	for (i = PARENT_MAX / 2; i < PARENT_MAX; i++) {
 		if ((temp = getOppoIndex(winPlate, i - (PARENT_MAX / 2), 60)) != -1) {
 			memcpy(par[i], gen[temp], sizeof(int) * GEN_LENGTH);
@@ -160,8 +164,8 @@ void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]) {
 			logB += sprintf(log + logB, "%d ", par[i][k]);
 		}
 
-		printf("// Win Rate [ %f ]\n", getWinRate(winPlate, index[i]));
-		logB += sprintf(log + logB, "// Win Rate [ %f ]\n", getWinRate(winPlate, index[i]));
+		printf("// Win Rate [ %f ]\n", genProfit[i]);
+		logB += sprintf(log + logB, "// Win Rate [ %f ]\n", genProfit[i]);
 
 		makeLog(log);
 	}
@@ -171,10 +175,10 @@ float getWinRate(int winPlate[][GENERATION_MAX], int i) {
 	int x, winGame = 0;
 
 	// Calc all win game number.
-	for (x = 0; x = GENERATION_MAX; x++) {
+	for (x = 0; x < GENERATION_MAX; x++) {
 		winGame += winPlate[i][x];
 	}
-	return ( winGame * 100 ) / (GAME_MAX * GENERATION_MAX);
+	return ((float)winGame * (float)100 ) / ((float)2 * (float)GAME_MAX * (float)(GENERATION_MAX - 1) );
 }
 
 int getOppoIndex(int winPlate[][GENERATION_MAX], int i, int rate) {

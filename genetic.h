@@ -19,6 +19,8 @@ int calcProfit(int * child, int * dst);
 void makeMutate(int * gen);
 void choosePar(int gen[][GEN_LENGTH], int par[][GEN_LENGTH]);
 int findProfit(int child[][GEN_LENGTH], int * dst, int profitDst);
+int getOppoIndex(int winPlate[][GENERATION_MAX], int i, int rate);
+float getWinRate(int winPlate[][GENERATION_MAX], int i);
 void makeLog(char * str);
 
 #endif
