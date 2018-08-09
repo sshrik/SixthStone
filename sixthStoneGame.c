@@ -1,4 +1,4 @@
-/*
+
 #include "sixthStone.h"
 
 int main()	{
@@ -26,11 +26,21 @@ int main()	{
 //		system("pause");
 
 		if(turn == WHITE)	{
-			sixthStoneBot(plate, nextPut, before, 2, weightListW, turn, nowTurn++);
+			for (i = 0; i < 2; i++) {
+				scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
+				while (canPut(plate, nextPut[i], turn) == NO) {
+					printf("%c[1;%dm", 27, 31);
+					printf("You can`t put there.\n");
+					printf("%c[0m", 27);
+					scanf(" %d %d", &nextPut[i].x, &nextPut[i].y);
+				}
+				put(plate, nextPut[i], turn);
+				display(plate);
+			}
+			//sixthStoneBot(plate, nextPut, before, 2, weightListW, turn, nowTurn++);
 		}
 		else {
 			sixthStoneBot(plate, nextPut, before, 2, weightListB, turn, nowTurn++);
-			
 		}
 		memcpy(before, nextPut, sizeof(cord2D) * 2);
 		if (allWhoWin(plate) == EMPTY) {
@@ -44,8 +54,8 @@ int main()	{
 
 	return 0;
 }
-*/
 
+/*
 #include "genetic.h"
 #include "sixthStone.h"
 
@@ -88,4 +98,4 @@ int main() {
 	system("pause");
 
 	return 0;
-}
+}*/
