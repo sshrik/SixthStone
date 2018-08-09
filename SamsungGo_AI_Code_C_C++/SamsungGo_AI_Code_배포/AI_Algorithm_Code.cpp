@@ -937,9 +937,6 @@ void doWin(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int tur
 }
 
 void doSheild(char plate[][PLATE_MAX], cord2D temp, int dir, cord2D * next, int turn) {
-	char debugBuf[200] = { 0, };
-	sprintf(debugBuf, "call doShield. temp(%d, %d)\n", temp.x, temp.y);
-	writeLog(debugBuf);
 	// Start from plate[cord.x, cord.y], direction dir is winning state, so put nextX and nextY to finish game.
 	int i, count = 0;
 	// For processing ___OOOO_.
@@ -1511,9 +1508,8 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		// Do only 1.
 		// Calculate opposite turn`s highest plate.
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, 4, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
+		minMax(plate, &next[0], temp, 4, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
-
 		return;
 	}
 
@@ -1537,17 +1533,19 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		}
 		else {
 			getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
+			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, turn, true);
 			put(plate, next[1], turn);
 		}
 	}
 	else if (next[1].x == -1 && next[0].x == -1){
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, WHITE, true);
+		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
 
+		temp.x = 0;
+		temp.y = 0;
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
-		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, WHITE, true);
+		minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, turn, true);
 		put(plate, next[1], turn);
 	}
 }
@@ -1888,7 +1886,7 @@ int doGame(int * weightListW, int * weightListB) {
 
 // ######################################################################################
 //
-//									minMax.c
+//									minMaxTree.c
 //
 // ######################################################################################
 
@@ -1903,29 +1901,56 @@ void copyMap(char copyPlate[][PLATE_MAX], char originalPlate[][PLATE_MAX]) {
 
 int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, int alpha, int beta, bool isMaximizingPlayer, cord2D *before, int tempCandidateWeight[][PLATE_MAX], int *weightList, int turnInTree, int turnCount, int myRealTurn, bool isRoot) {
 	int maxValue = -9999, minValue = 9999;//temporary value
-	int temp, candidateNum;
+	int temp, candidateNum, loseDir, oppoTurn, rootMax = -99999;
 	cord2D selectedCord;
-	cord2D candCord[CAND_MAX * 2];//temporary array size
+	cord2D candCord[CAND_MAX * 2], tempCord[CAND_MAX * 2];//temporary array size
 	char savedPlate[PLATE_MAX][PLATE_MAX], changedPlate[PLATE_MAX][PLATE_MAX]; //original plate which stored at this depth's method.
+	oppoTurn = turnInTree == WHITE ? BLACK : WHITE;
 	copyMap(savedPlate, tempPlate);
 
 	if (--turnCount < 0) {
 		isMaximizingPlayer = isMaximizingPlayer ? false : true;
-		turnInTree = turnInTree == WHITE ? BLACK : WHITE;
+		turnInTree = oppoTurn;
 		turnCount = 1;
-		cord.x = -1;
-		cord.y = -1;
 	}
 
 	changeBlocking(tempPlate, changedPlate, turnInTree);
-
-	if (depth == 0 || (turnCount == 1 && getWinState(changedPlate, &cord, turnInTree) != NO)) {
+	if (depth == 0) {
+		changeBlocking(tempPlate, changedPlate, myRealTurn);
 		candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, before, CAND_MAX, weightList, myRealTurn); //myRealTurn에 대한 tempCandidateWeight구하기
 		int weight = calcWeight(tempCandidateWeight);
 		return weight;
 	}
+	//Search in case we can win.(내 턴이 2개 남았을 때)
+	if ((turnCount > 0) && (loseDir = getWinState(changedPlate, &cord, turnInTree) != NO)) {
+		if (turnInTree == myRealTurn) {
+			return WIN_WEIGHT;
+		}
+		else {
+			return -WIN_WEIGHT;
+		}
+	}
+	//Search in case we would loose(내 턴이 몇개 남았든 상관 없음)
+	changeBlocking(tempPlate, changedPlate, oppoTurn);
+	if ((loseDir = getWinState(changedPlate, &cord, oppoTurn)) != NO) {
+		doSheild(changedPlate, cord, loseDir, &candCord[0], turnInTree);
+		put(tempPlate, candCord[0], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
+		temp = minMax(tempPlate, next, candCord[0], depth - 1, alpha, beta, isMaximizingPlayer, before, tempCandidateWeight, weightList, turnInTree, turnCount, myRealTurn, false);
 
-	candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, before, CAND_MAX, weightList, turnInTree); //다음 바둑돌 위치 찾기
+		if (isRoot) {
+			next->x = candCord[0].x;
+			next->y = candCord[0].y;
+		}
+		return temp;
+
+	}
+	else {
+		changeBlocking(tempPlate, changedPlate, turnInTree);
+		candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, before, CAND_MAX, weightList, turnInTree); //다음 바둑돌 위치 찾기
+		changeBlocking(tempPlate, changedPlate, myRealTurn);
+		candidateNum = getCandidate(changedPlate, tempCandidateWeight, tempCord, before, CAND_MAX, weightList, turnInTree); //myRealTurn 입장에서의 weight구하기
+		changeBlocking(tempPlate, changedPlate, turnInTree);//다시 되돌리기
+	}
 	//win state 경우 찾은 후 해당 자리에 candCord좌표 설정
 	for (int i = 0; i < candidateNum; i++) {
 		put(tempPlate, candCord[i], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
@@ -1939,6 +1964,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 			if (maxValue < temp) {
 				maxValue = temp;
 				selectedCord = candCord[i];
+
 			}
 		}
 		else {
