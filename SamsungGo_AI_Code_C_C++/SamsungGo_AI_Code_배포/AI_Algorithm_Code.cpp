@@ -55,7 +55,7 @@ void myturn(int cnt) {
 	int x[2], y[2];
 	int i, j;
 	char plate[PLATE_MAX][PLATE_MAX];
-	int weightListB[20] = { 1, 700, 300, 500, 900, 1, -500, -200, -300, -500, 1, 3, 700, 500, 900, 1, 3, -200, -300, -500 };
+	int weightListB[20] = { 1, 700, 300, 500, 900, -1, -500, -200, -300, -500, 1, 3, 700, 500, 900, -1, -3, -200, -300, -500 };
 	
 	// set my collor
 	if (myColor == 0 && cnt == 1){
