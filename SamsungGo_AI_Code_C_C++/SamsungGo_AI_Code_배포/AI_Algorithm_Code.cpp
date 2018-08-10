@@ -45,9 +45,11 @@ char info[] = { "TeamName:SixthStone,Department:CAU" };
 
 cord2D next[2] = { { -1, -1 }, { -1, -1 } }, before[2] = { {0x10, 0x10}, {0x10, 0x10} };
 
-int nowTurn = 0;
+int nowTurn = 1;
 
-// 자신이 흑이라고 가정하고 플레이 하겠소
+char myColor = 0;
+char oppoColor = 0;
+
 void myturn(int cnt) {
 
 	int x[2], y[2];
@@ -55,6 +57,18 @@ void myturn(int cnt) {
 	char plate[PLATE_MAX][PLATE_MAX];
 	int weightListB[20] = { 1, 700, 300, 500, 900, 1, -500, -200, -300, -500, 1, 3, 700, 500, 900, 1, 3, -200, -300, -500 };
 	
+	// set my collor
+	if (myColor == 0 && cnt == 1){
+		myColor = BLACK;
+		oppoColor = WHITE;
+		nowTurn = 1;
+	}
+	else if (myColor == 0 && cnt == 2){
+		myColor = WHITE;
+		oppoColor = BLACK;
+		nowTurn = 2;
+	}
+
 	// make plate
 	for (i = 0; i < PLATE_MAX; i++){
 		for (j = 0; j < PLATE_MAX; j++){
@@ -64,10 +78,10 @@ void myturn(int cnt) {
 			}
 			switch (showBoard(i, j)){
 			case 1 :
-				plate[i][j] = BLACK;
+				plate[i][j] = myColor;
 				break;
 			case 2:
-				plate[i][j] = WHITE;
+				plate[i][j] = oppoColor;
 				break;
 			case 3:
 				plate[i][j] = BLOCK;
@@ -78,7 +92,8 @@ void myturn(int cnt) {
 
 	writeLog("myturn break");
 	// calculate
-	sixthStoneBot(plate, next, before, cnt, weightListB, BLACK, ++nowTurn);
+	sixthStoneBot(plate, next, before, cnt, weightListB, myColor, nowTurn);
+	nowTurn += 2;
 
 	for (i = 0; i < 2; i++){
 		before[i].x = next[i].x;
@@ -86,7 +101,7 @@ void myturn(int cnt) {
 	}
 
 	char debugBuffer[200] = {0, };
-	sprintf(debugBuffer, "found it : (%d, %d) (%d, %d)\n", next[0].x, next[0].y, next[1].x, next[1].y);
+	sprintf(debugBuffer, "%c, found it : (%d, %d) (%d, %d)\n", myColor, next[0].x, next[0].y, next[1].x, next[1].y);
 	writeLog(debugBuffer);
 
 	// translate cord2D to array of x,y
