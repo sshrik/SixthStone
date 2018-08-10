@@ -90,7 +90,7 @@ void myturn(int cnt) {
 		}
 	}
 
-	writeLog("myturn break");
+	//writeLog("myturn break");
 	// calculate
 	sixthStoneBot(plate, next, before, cnt, weightListB, myColor, nowTurn);
 	nowTurn += 2;
@@ -99,10 +99,11 @@ void myturn(int cnt) {
 		before[i].x = next[i].x;
 		before[i].y = next[i].y;
 	}
-
+	
 	char debugBuffer[200] = {0, };
 	sprintf(debugBuffer, "%c, found it : (%d, %d) (%d, %d)\n", myColor, next[0].x, next[0].y, next[1].x, next[1].y);
 	writeLog(debugBuffer);
+	
 
 	// translate cord2D to array of x,y
 	for (i = 0; i < cnt; i++){
@@ -135,9 +136,11 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 	memset(candCord, -1, sizeof(cord2D) * candLimit);
 	memset(candWeightList, 0x00, sizeof(int) * candLimit);
 	memset(candLengthList, 0x00, sizeof(int) * candLimit);
+	/*
 	char debugBuff[200];
 	sprintf(debugBuff, "getCandidate:: init\n");
-	writeLog(debugBuff);
+	//writeLog(debugBuff);
+	*/
 	
 
 	if (count > WINSTATE_MAX) {
@@ -222,7 +225,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			}
 		}
 	}
-	writeLog("getCandidate:: finish first for\n");
+	//writeLog("getCandidate:: finish first for\n");
 
 	// Add weight for around state.
 	for (i = 0; i < PLATE_MAX; i++) {
@@ -237,7 +240,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			}
 		}
 	}
-	writeLog("getCandidate:: finish 2nd for\n");
+	//writeLog("getCandidate:: finish 2nd for\n");
 
 	// Calc candidate and sort with given limit number / candidate weight.
 	for (i = 0; i < PLATE_MAX; i++) {
@@ -294,7 +297,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			}
 		}
 	}
-	writeLog("getCandidate:: finish 3rd for\n");
+	//writeLog("getCandidate:: finish 3rd for\n");
 
 	// Cut - off non-useless candidate.
 	for (i = 0; i < candLimit; i++) {
@@ -306,7 +309,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			candNum--;
 		}
 	}
-	writeLog("getCandidate:: finish 4th for\n");
+	//writeLog("getCandidate:: finish 4th for\n");
 
 	for (i = 1; i < candNum; i++) {
 		if (candWeightList[i] * 100 < candWeightList[0] * 80) {
@@ -317,7 +320,7 @@ int getCandidate(char plate[][PLATE_MAX], int candidateWeight[][PLATE_MAX], cord
 			candNum--;
 		}
 	}
-	writeLog("getCandidate:: finish 5th for\n");
+	//writeLog("getCandidate:: finish 5th for\n");
 
 
 	free(candLengthList);
@@ -1544,11 +1547,11 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	//Search in case we can win.
 	if ((loseDir = getWinState(mPlate, &temp, turn)) != NO) {
 		doWin(plate, temp, loseDir, next, turn);
-		writeLog("win phase");
+		//writeLog("win phase");
 	}
 	else if ((loseDir = getWinState(oPlate, &temp, oppo)) != NO){
 		doSheild(plate, temp, loseDir, &next[0], turn);
-		writeLog("lose phase");
+		//writeLog("lose phase");
 	}
 
 	// Init temp - plate.
@@ -1556,28 +1559,28 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 	changeBlocking(plate, oPlate, oppo);
 
 	if (next[1].x == -1 && next[0].x != -1) {
-		writeLog("i already use 1st ball");
+		//writeLog("i already use 1st ball");
 		// Check if is there any other lose state.
 		if ((loseDir = getWinState(oPlate, &temp, oppo)) != NO) {
 			// In this case, next[0] will using twice.
 			doSheild(plate, temp, loseDir, &next[1], turn);
-			writeLog("lose phase with 2nd ball");
+			//writeLog("lose phase with 2nd ball");
 		}
 		else {
 			getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 			minMax(plate, &next[1], temp, DEPTH_MAX - 1, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 1, turn, true);
 			put(plate, next[1], turn);
-			writeLog("found candidates");
+			//writeLog("found candidates");
 		}
 	}
 	else if (next[1].x == -1 && next[0].x == -1){
-		writeLog("attempts to find candidate\n");
+		//writeLog("attempts to find candidate\n");
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
 		minMax(plate, &next[0], temp, DEPTH_MAX, -INT_MAX, INT_MAX, true, before, candidateWeight, weightList, turn, 2, turn, true);
 		put(plate, next[0], turn);
 		//printf("(%d, %d)", next[0].x, next[0].y);
 		//system("pause");
-		writeLog("found candidate of 1st\n");
+		//writeLog("found candidate of 1st\n");
 		temp.x = 0;
 		temp.y = 0;
 		getCandidate(plate, candidateWeight, myCandCord, before, CAND_MAX, weightList, turn);//to get candidateWeight
@@ -1585,7 +1588,7 @@ void sixthStoneBot(char plate[][PLATE_MAX], cord2D *next, cord2D *before, int do
 		put(plate, next[1], turn);
 		//printf("(%d, %d) \n", next[1].x, next[1].y);
 		//system("pause");
-		writeLog("found candidate of 2nd");
+		//writeLog("found candidate of 2nd");
 	}
 }
 
@@ -1939,7 +1942,7 @@ void copyMap(char copyPlate[][PLATE_MAX], char originalPlate[][PLATE_MAX]) {
 }
 
 int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, int alpha, int beta, bool isMaximizingPlayer, cord2D *before, int tempCandidateWeight[][PLATE_MAX], int *weightList, int turnInTree, int turnCount, int myRealTurn, bool isRoot) {
-	writeLog("minMax:: called minMax\n");
+	//writeLog("minMax:: called minMax\n");
 	int maxValue = -9999, minValue = 9999;//temporary value
 	int temp, candidateNum = 0, loseDir, oppoTurn, rootMax = -99999;
 	cord2D selectedCord;
@@ -1947,7 +1950,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 	char savedPlate[PLATE_MAX][PLATE_MAX], changedPlate[PLATE_MAX][PLATE_MAX]; //original plate which stored at this depth's method.
 	oppoTurn = turnInTree == WHITE ? BLACK : WHITE;
 	copyMap(savedPlate, tempPlate);
-	writeLog("minMax:: init\n");
+	//writeLog("minMax:: init\n");
 
 	if (--turnCount < 0) {
 		isMaximizingPlayer = isMaximizingPlayer ? false : true;
@@ -1958,33 +1961,33 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 	
 	changeBlocking(tempPlate, changedPlate, turnInTree);
 	if (depth == 0) {
-		writeLog("minMax:: depth 0\n");
+		//writeLog("minMax:: depth 0\n");
 		changeBlocking(tempPlate, changedPlate, myRealTurn);
 		candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, before, CAND_MAX, weightList, myRealTurn); //myRealTurn에 대한 tempCandidateWeight구하기
 		int weight = calcWeight(tempCandidateWeight);
-		writeLog("minMax:: depth 0 return\n");
+		//writeLog("minMax:: depth 0 return\n");
 		return weight;
 	}
 	//Search in case we can win.(내 턴이 2개 남았을 때)
 	if ((turnCount > 0) && (loseDir = getWinState(changedPlate, &cord, turnInTree) != NO)) {
 		if (turnInTree == myRealTurn) {
-			writeLog("minMax:: win case\n");
+			//writeLog("minMax:: win case\n");
 			return WIN_WEIGHT;
 		}
 		else {
 			//printf("상대가 (%d, %d)여기서 찾을 수 있는 방향의 공격지점에 둬서 내가 졌을 때 - depth : %d\n", cord.x, cord.y, depth);
-			writeLog("minMax:: lose case\n");
+			//writeLog("minMax:: lose case\n");
 			return -WIN_WEIGHT;
 		}
 	}
-	writeLog("minMax:: breakpoint-1\n");
+	//writeLog("minMax:: breakpoint-1\n");
 	//Search in case we would loose(내 턴이 몇개 남았든 상관 없음)
 	changeBlocking(tempPlate, changedPlate, oppoTurn);
 	if ((loseDir = getWinState(changedPlate, &cord, oppoTurn)) != NO) {
-		writeLog("minMax:: breakpoint-1.1\n");
+		//writeLog("minMax:: breakpoint-1.1\n");
 		doSheild(changedPlate, cord, loseDir, &candCord[0], turnInTree);
 		put(tempPlate, candCord[0], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
-		writeLog("minMax:: lose position found\n");
+		//writeLog("minMax:: lose position found\n");
 		temp = minMax(tempPlate, next, candCord[0], depth - 1, alpha, beta, isMaximizingPlayer, before, tempCandidateWeight, weightList, turnInTree, turnCount, myRealTurn, false);
 
 		if (isRoot) {
@@ -1994,7 +1997,7 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 		return temp;
 	}
 	else {
-		writeLog("minMax:: breakpoint-1.2\n");
+		//writeLog("minMax:: breakpoint-1.2\n");
 		changeBlocking(tempPlate, changedPlate, turnInTree);
 		candidateNum = getCandidate(changedPlate, tempCandidateWeight, candCord, before, CAND_MAX, weightList, turnInTree); //다음 바둑돌 위치 찾기
 		changeBlocking(tempPlate, changedPlate, myRealTurn);
@@ -2002,11 +2005,11 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 		changeBlocking(tempPlate, changedPlate, turnInTree);//다시 되돌리기
 
 	}
-	writeLog("minMax:: breakpoint-2\n");
+	//writeLog("minMax:: breakpoint-2\n");
 	//win state 경우 찾은 후 해당 자리에 candCord좌표 설정
 	for (int i = 0; i < candidateNum; i++) {
 		put(tempPlate, candCord[i], turnInTree);//tempPlate에 주어진 cord자리에 바둑돌 놓기
-		writeLog("minMax:: win position found\n");
+		//writeLog("minMax:: win position found\n");
 		temp = minMax(tempPlate, next, candCord[i], depth - 1, alpha, beta, isMaximizingPlayer, before, tempCandidateWeight, weightList, turnInTree, turnCount, myRealTurn, false);
 		copyMap(tempPlate, savedPlate);
 		if (isMaximizingPlayer) {
@@ -2036,6 +2039,6 @@ int minMax(char tempPlate[][PLATE_MAX], cord2D *next, cord2D cord, int depth, in
 			next->y = selectedCord.y;
 		}
 	}
-	writeLog("minMax:: breakpoint-3\n");
+	//writeLog("minMax:: breakpoint-3\n");
 	return isMaximizingPlayer ? maxValue : minValue;
 }
